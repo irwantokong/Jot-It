@@ -1,4 +1,4 @@
-package id.ac.ui.cs.mobileprogramming.irwanto.jotit.activity;
+package id.ac.ui.cs.mobileprogramming.irwanto.jotit;
 
 import androidx.appcompat.app.AppCompatActivity;
 
