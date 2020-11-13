@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Jot It</string>
+    <string name="bottom_nav_note_title">My Notes</string>
+    <string name="bottom_nav_reminder_title">My Reminders</string>
 </resources>

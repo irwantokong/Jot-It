@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/notes_page"
+        android:enabled="true"
+        android:icon="@drawable/ic_note"
+        android:title="@string/bottom_nav_note_title"/>
+    <item
+        android:id="@+id/reminders_page"
+        android:enabled="true"
+        android:icon="@drawable/ic_reminder"
+        android:title="@string/bottom_nav_reminder_title"/>
+</menu>
