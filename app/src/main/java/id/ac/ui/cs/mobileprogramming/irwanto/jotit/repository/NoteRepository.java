@@ -30,19 +30,19 @@ public class NoteRepository {
         return noteDAO.getNoteById(noteId);
     }
 
-    void insert(Note note) {
+    public void insert(Note note) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             noteDAO.insertNote(note);
         });
     }
 
-    void update(Note note) {
+    public void update(Note note) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             noteDAO.updateNote(note);
         });
     }
 
-    void delete(Note note) {
+    public void delete(Note note) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             noteDAO.deleteNote(note);
         });

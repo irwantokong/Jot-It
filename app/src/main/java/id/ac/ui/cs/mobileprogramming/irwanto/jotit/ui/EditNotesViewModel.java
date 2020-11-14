@@ -1,28 +1,28 @@
 package id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-
-import java.util.List;
+import androidx.lifecycle.MutableLiveData;
 
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Note;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.repository.NoteRepository;
 
-public class NotesListViewModel extends AndroidViewModel {
+public class EditNotesViewModel extends AndroidViewModel {
     private NoteRepository noteRepository;
 
-    private final LiveData<List<Note>> mAllNotes;
-
-    public NotesListViewModel(Application application) {
+    public EditNotesViewModel(Application application) {
         super(application);
         noteRepository = new NoteRepository(application);
-        mAllNotes = noteRepository.getAllNotes();
     }
 
-    public LiveData<List<Note>> getAllNotes() {
-        return mAllNotes;
+    public void saveNote(Note note) {
+        noteRepository.insert(note);
     }
 
+    public Note initNote() {
+        Note editableNote = new Note();
+        return editableNote;
+    }
 }

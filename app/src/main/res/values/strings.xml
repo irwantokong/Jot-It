@@ -2,4 +2,6 @@
     <string name="app_name">Jot It</string>
     <string name="bottom_nav_note_title">My Notes</string>
     <string name="bottom_nav_reminder_title">My Reminders</string>
+    <string name="option_menu_save">Save</string>
+    <string name="option_menu_back">Back</string>
 </resources>

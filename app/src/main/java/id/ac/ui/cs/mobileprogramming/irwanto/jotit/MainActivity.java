@@ -21,7 +21,7 @@ import id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui.RemindersListFragment;
 
 public class MainActivity extends AppCompatActivity {
     FragmentManager fragmentManager = getSupportFragmentManager();
-    @BindView(R.id.bottom_navigaton) BottomNavigationView bottomNavigationView;
+    @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
