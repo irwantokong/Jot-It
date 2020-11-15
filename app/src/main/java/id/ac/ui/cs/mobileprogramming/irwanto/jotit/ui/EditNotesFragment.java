@@ -26,6 +26,7 @@ public class EditNotesFragment extends Fragment {
     private FragmentManager fragmentManager;
     private EditNotesViewModel mViewModel;
     private EditNotesFragmentBinding binding;
+    private String noteId;
 
     public static EditNotesFragment newInstance() {
         return new EditNotesFragment();
@@ -34,6 +35,9 @@ public class EditNotesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        if (this.getArguments() != null) {
+            noteId = this.getArguments().getString("noteId", null);
+        }
         fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
         binding = DataBindingUtil.inflate(inflater, R.layout.edit_notes_fragment, container, false);
@@ -58,8 +62,8 @@ public class EditNotesFragment extends Fragment {
                 fragmentManager.popBackStack();
                 return true;
             case R.id.edit_note_done:
-                mViewModel.saveNote();
-                Log.d("ir", "save_note");
+                mViewModel.saveNote(noteId);
+                fragmentManager.popBackStack();
                 return true;
         }
         return false;
@@ -71,7 +75,12 @@ public class EditNotesFragment extends Fragment {
         setupToolbar(true);
         mViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getActivity().getApplication())).get(EditNotesViewModel.class);
         binding.setViewModel(mViewModel);
-        mViewModel.initNote();
+        mViewModel.initNote(noteId);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        setupToolbar(false);
+    }
 }

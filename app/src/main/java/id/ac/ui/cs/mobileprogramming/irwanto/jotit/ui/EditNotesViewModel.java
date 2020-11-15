@@ -3,6 +3,7 @@ package id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui;
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Note;
@@ -20,14 +21,23 @@ public class EditNotesViewModel extends AndroidViewModel {
         noteRepository = new NoteRepository(application);
     }
 
-    public void saveNote() {
-        editableNote.title = _titleTextField.getValue();
+    public void saveNote(String noteId) {
+        editableNote.title = (_titleTextField.getValue() == null || _titleTextField.getValue().isEmpty())
+                ? "(untitled)" : _titleTextField.getValue();
         editableNote.description = _descTextField.getValue();
-        noteRepository.insert(editableNote);
+        if (noteId != null) {
+            noteRepository.update(editableNote);
+        } else {
+            noteRepository.insert(editableNote);
+        }
     }
 
-    public void initNote() {
-        editableNote = new Note();
+    public void initNote(String noteId) {
+        if (noteId != null) {
+            editableNote = noteRepository.getNoteById(noteId);
+        } else {
+            editableNote = new Note();
+        }
         _titleTextField.setValue(editableNote.title);
         _descTextField.setValue(editableNote.description);
     }

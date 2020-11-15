@@ -3,6 +3,7 @@ package id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -21,7 +22,6 @@ import android.view.ViewGroup;
 
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.databinding.DisplayNoteFragmentBinding;
-import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Note;
 
 public class DisplayNoteFragment extends Fragment {
 
@@ -38,7 +38,6 @@ public class DisplayNoteFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         noteId = this.getArguments().getString("noteId");
-        Log.d("noteid", noteId);
         fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
         binding = DataBindingUtil.inflate(inflater, R.layout.display_note_fragment, container, false);
@@ -59,10 +58,21 @@ public class DisplayNoteFragment extends Fragment {
                 fragmentManager.popBackStack();
                 return true;
             case R.id.display_note_delete:
-                Log.d("d", "delete");
+                mViewModel.deleteNote();
+                fragmentManager.popBackStack();
                 return true;
             case R.id.display_note_edit:
-                Log.d("d", "edit");
+                Bundle bundle = new Bundle();
+                bundle.putString("noteId", noteId);
+
+                EditNotesFragment fragment = new EditNotesFragment();
+                fragment.setArguments(bundle);
+
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.activity_container, fragment);
+                fragmentTransaction.addToBackStack(this.getClass().getName());
+                fragmentTransaction.commit();
+                return true;
         }
         return false;
     }
