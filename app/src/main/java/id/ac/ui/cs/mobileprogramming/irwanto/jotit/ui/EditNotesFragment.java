@@ -1,6 +1,7 @@
 package id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -18,24 +19,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.textfield.TextInputEditText;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
-import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Note;
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.databinding.EditNotesFragmentBinding;
 
 public class EditNotesFragment extends Fragment {
-    @BindView(R.id.edit_note_title)
-    TextInputEditText editNoteTitle;
-
-    @BindView(R.id.edit_note_description)
-    TextInputEditText editNoteDescription;
-
     private FragmentManager fragmentManager;
     private EditNotesViewModel mViewModel;
-    private View view;
-    private Note editableNote;
+    private EditNotesFragmentBinding binding;
 
     public static EditNotesFragment newInstance() {
         return new EditNotesFragment();
@@ -46,9 +36,9 @@ public class EditNotesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
-        view = inflater.inflate(R.layout.edit_notes_fragment, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+        binding = DataBindingUtil.inflate(inflater, R.layout.edit_notes_fragment, container, false);
+        binding.setLifecycleOwner(this);
+        return binding.getRoot();
     }
 
     public void setupToolbar() {
@@ -68,9 +58,7 @@ public class EditNotesFragment extends Fragment {
                 fragmentManager.popBackStack();
                 return true;
             case R.id.edit_note_done:
-                editableNote.title = editNoteTitle.getText().toString();
-                editableNote.description = editNoteDescription.getText().toString();
-                mViewModel.saveNote(editableNote);
+                mViewModel.saveNote();
                 Log.d("ir", "save_note");
                 return true;
         }
@@ -82,7 +70,8 @@ public class EditNotesFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setupToolbar();
         mViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getActivity().getApplication())).get(EditNotesViewModel.class);
-        editableNote = mViewModel.initNote();
+        binding.setViewModel(mViewModel);
+        mViewModel.initNote();
     }
 
 }
