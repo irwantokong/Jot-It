@@ -15,16 +15,22 @@ import butterknife.ButterKnife;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Note;
 
-public class NotesListAdapter extends ListAdapter<Note, NoteViewHolder> {
+public class NotesListAdapter extends ListAdapter<Note, NotesListAdapter.NoteViewHolder> {
+    public interface ListItemOnClickListener {
+        void onListItemClick(int position);
+    }
+    final private ListItemOnClickListener listItemOnClickListener;
 
-    public NotesListAdapter(@NonNull DiffUtil.ItemCallback<Note> diffCallback) {
+    public NotesListAdapter(@NonNull DiffUtil.ItemCallback<Note> diffCallback, ListItemOnClickListener listItemOnClickListener) {
         super(diffCallback);
+        this.listItemOnClickListener = listItemOnClickListener;
     }
 
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return NoteViewHolder.create(parent);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_list_item, parent, false);
+        return new NoteViewHolder(view);
     }
 
     @Override
@@ -45,23 +51,25 @@ public class NotesListAdapter extends ListAdapter<Note, NoteViewHolder> {
             return oldItem.title.equals(newItem.title);
         }
     }
-}
 
-class NoteViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.notes_item_title)
-    TextView noteItemTitleView;
+    public class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @BindView(R.id.notes_item_title)
+        TextView noteItemTitleView;
 
-    private NoteViewHolder(View itemView) {
-        super(itemView);
-        ButterKnife.bind(this, itemView);
-    }
+        public NoteViewHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            ButterKnife.bind(this, itemView);
+        }
 
-    public void bind(String text) {
-        noteItemTitleView.setText(text);
-    }
+        public void bind(String text) {
+            noteItemTitleView.setText(text);
+        }
 
-    static NoteViewHolder create(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_list_item, parent, false);
-        return new NoteViewHolder(view);
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            listItemOnClickListener.onListItemClick(position);
+        }
     }
 }

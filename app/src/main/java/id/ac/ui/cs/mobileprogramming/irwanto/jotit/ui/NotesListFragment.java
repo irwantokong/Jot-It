@@ -12,9 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -23,7 +25,7 @@ import butterknife.ButterKnife;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.adapter.NotesListAdapter;
 
-public class NotesListFragment extends Fragment {
+public class NotesListFragment extends Fragment implements NotesListAdapter.ListItemOnClickListener {
     @BindView(R.id.add_note_fab)
     FloatingActionButton add_note_fab;
 
@@ -44,10 +46,25 @@ public class NotesListFragment extends Fragment {
         View view = inflater.inflate(R.layout.notes_list_fragment, container, false);
         ButterKnife.bind(this, view);
         fragmentManager = getActivity().getSupportFragmentManager();
-        adapter = new NotesListAdapter(new NotesListAdapter.NoteDiff());
+        adapter = new NotesListAdapter(new NotesListAdapter.NoteDiff(), this::onListItemClick);
         notesRecyclerView.setAdapter(adapter);
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;
+    }
+
+    @Override
+    public void onListItemClick(int position) {
+        Bundle bundle = new Bundle();
+        String noteId = adapter.getCurrentList().get(position).noteId;
+        bundle.putString("noteId", noteId);
+
+        DisplayNoteFragment fragment = new DisplayNoteFragment();
+        fragment.setArguments(bundle);
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.activity_container, fragment);
+        transaction.addToBackStack(this.getClass().getName());
+        transaction.commit();
     }
 
     @Override

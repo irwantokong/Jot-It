@@ -41,8 +41,8 @@ public class EditNotesFragment extends Fragment {
         return binding.getRoot();
     }
 
-    public void setupToolbar() {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    public void setupToolbar(boolean home) {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(home);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class EditNotesFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setupToolbar();
+        setupToolbar(true);
         mViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getActivity().getApplication())).get(EditNotesViewModel.class);
         binding.setViewModel(mViewModel);
         mViewModel.initNote();
