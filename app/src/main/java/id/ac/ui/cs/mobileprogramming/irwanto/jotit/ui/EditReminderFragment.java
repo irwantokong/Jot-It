@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ClipData;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,6 +30,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import butterknife.BindDrawable;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTouch;
@@ -39,6 +43,7 @@ public class EditReminderFragment extends Fragment {
     private EditReminderViewModel mViewModel;
     private FragmentManager fragmentManager;
     private EditReminderFragmentBinding binding;
+    private String reminderId;
 
     public static EditReminderFragment newInstance() {
         return new EditReminderFragment();
@@ -47,6 +52,10 @@ public class EditReminderFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        if (this.getArguments() != null) {
+            reminderId = this.getArguments().getString("reminderId", null);
+        }
+
         fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
         binding = DataBindingUtil.inflate(inflater, R.layout.edit_reminder_fragment, container, false);
@@ -60,6 +69,8 @@ public class EditReminderFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.edit_reminder_options_menu, menu);
+        MenuItem deleteOption = menu.findItem(R.id.edit_reminder_delete);
+        deleteOption.setVisible(reminderId == null ? false : true);
     }
 
     @OnClick(R.id.edit_reminder_date_wrapper)
@@ -101,7 +112,11 @@ public class EditReminderFragment extends Fragment {
                 fragmentManager.popBackStack();
                 return true;
             case R.id.edit_reminder_done:
-                mViewModel.saveReminder();
+                mViewModel.saveReminder(reminderId);
+                fragmentManager.popBackStack();
+                return true;
+            case R.id.edit_reminder_delete:
+                mViewModel.deleteReminder();
                 fragmentManager.popBackStack();
                 return true;
         }
@@ -113,8 +128,8 @@ public class EditReminderFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setupToolbar(true);
         mViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getActivity().getApplication())).get(EditReminderViewModel.class);
-        mViewModel.initReminder();
         binding.setViewModel(mViewModel);
+        mViewModel.initReminder(reminderId);
     }
 
     @Override

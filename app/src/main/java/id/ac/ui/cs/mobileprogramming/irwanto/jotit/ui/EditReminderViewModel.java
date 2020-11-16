@@ -25,20 +25,33 @@ public class EditReminderViewModel extends AndroidViewModel {
         reminderRepository = new ReminderRepository(application);
     }
 
-    public void initReminder() {
-        editableReminder = new Reminder();
-        editableReminder.date = new SimpleDateFormat("E, dd/MM/yyyy").format(new Date());
-        editableReminder.time = new SimpleDateFormat("HH:mm").format(new Date());
+    public void initReminder(String reminderId) {
+        if (reminderId != null) {
+            editableReminder = reminderRepository.getReminderById(reminderId);
+        } else {
+            editableReminder = new Reminder();
+            editableReminder.date = new SimpleDateFormat("E, dd/MM/yyyy").format(new Date());
+            editableReminder.time = new SimpleDateFormat("HH:mm").format(new Date());
+        }
 
+        _titleField.setValue(editableReminder.title);
         _dateField.setValue(editableReminder.date);
         _timeField.setValue(editableReminder.time);
     }
 
-    public void saveReminder() {
+    public void saveReminder(String reminderId) {
         editableReminder.title = _titleField.getValue();
         editableReminder.date = _dateField.getValue();
         editableReminder.time = _timeField.getValue();
-        reminderRepository.insert(editableReminder);
+        if (reminderId != null) {
+            reminderRepository.update(editableReminder);
+        } else {
+            reminderRepository.insert(editableReminder);
+        }
+    }
+
+    public void deleteReminder() {
+        reminderRepository.delete(editableReminder);
     }
 
     public void set_dateField(int year, int month, int day) {
