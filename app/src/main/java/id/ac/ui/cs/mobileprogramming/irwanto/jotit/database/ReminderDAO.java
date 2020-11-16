@@ -22,6 +22,9 @@ public interface ReminderDAO {
     @Query("SELECT * FROM reminders_table WHERE reminder_id = :reminderId")
     Reminder getReminderById(String reminderId);
 
+    @Query("SELECT * FROM reminders_table ORDER BY _id DESC LIMIT 1")
+    Reminder getLatestReminder();
+
     @Insert
     void insertReminder(Reminder note);
 

@@ -5,7 +5,9 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.database.AppDatabase;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.database.ReminderDAO;
@@ -35,6 +37,21 @@ public class ReminderRepository {
                 @Override
                 public void run() {
                     reminder[0] = reminderDAO.getReminderById(reminderId);
+                }
+            }).get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return reminder[0];
+    }
+
+    public Reminder getLatestReminder() {
+        final Reminder[] reminder = new Reminder[1];
+        try {
+            AppDatabase.databaseWriteExecutor.submit(new Runnable() {
+                @Override
+                public void run() {
+                    reminder[0] = reminderDAO.getLatestReminder();
                 }
             }).get();
         } catch (ExecutionException | InterruptedException e) {

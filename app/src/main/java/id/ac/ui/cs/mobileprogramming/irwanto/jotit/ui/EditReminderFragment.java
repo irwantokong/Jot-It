@@ -75,7 +75,6 @@ public class EditReminderFragment extends Fragment {
 
     @OnClick(R.id.edit_reminder_date_wrapper)
     public void showDatePicker() {
-        Log.d("d", "here");
         final Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         int month = calendar.get(Calendar.MONTH);

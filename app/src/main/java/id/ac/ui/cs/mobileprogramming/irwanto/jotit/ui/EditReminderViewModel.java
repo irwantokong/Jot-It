@@ -1,6 +1,9 @@
 package id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
@@ -8,13 +11,18 @@ import androidx.lifecycle.MutableLiveData;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Reminder;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.repository.ReminderRepository;
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.util.AlarmManagerUtil;
 
 public class EditReminderViewModel extends AndroidViewModel {
     private ReminderRepository reminderRepository;
     private Reminder editableReminder;
+    private AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
 
     public MutableLiveData<String> _titleField = new MutableLiveData<>();
     public MutableLiveData<String> _dateField = new MutableLiveData<>();
@@ -45,13 +53,21 @@ public class EditReminderViewModel extends AndroidViewModel {
         editableReminder.time = _timeField.getValue();
         if (reminderId != null) {
             reminderRepository.update(editableReminder);
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.execute(new UpdateAlarmJob(editableReminder));
+            executorService.shutdown();
         } else {
             reminderRepository.insert(editableReminder);
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.execute(new CreateNewAlarmJob(editableReminder.reminderId));
+            executorService.shutdown();
         }
+
     }
 
     public void deleteReminder() {
         reminderRepository.delete(editableReminder);
+        AlarmManagerUtil.cancelAlarm(getApplication().getApplicationContext(), alarmManager, editableReminder);
     }
 
     public void set_dateField(int year, int month, int day) {
@@ -70,5 +86,36 @@ public class EditReminderViewModel extends AndroidViewModel {
     public void set_timeField(int hour, int minute) {
         String timeString = String.format("%02d:%02d", hour, minute);
         _timeField.setValue(timeString);
+    }
+
+    class CreateNewAlarmJob implements Runnable {
+        private String reminderId;
+
+        public CreateNewAlarmJob(String reminderId) {
+            this.reminderId = reminderId;
+        }
+
+        @Override
+        public void run() {
+            Reminder reminder = reminderRepository.getLatestReminder();
+            while (!reminder.reminderId.equals(this.reminderId)) {
+                reminder = reminderRepository.getLatestReminder();
+            }
+            AlarmManagerUtil.createAlarm(getApplication().getApplicationContext(), alarmManager, reminder);
+        }
+    }
+
+    class UpdateAlarmJob implements Runnable {
+        private Reminder reminder;
+
+        public UpdateAlarmJob(Reminder reminder) {
+            this.reminder = reminder;
+        }
+
+        @Override
+        public void run() {
+            AlarmManagerUtil.cancelAlarm(getApplication().getApplicationContext(), alarmManager, this.reminder);
+            AlarmManagerUtil.createAlarm(getApplication().getApplicationContext(), alarmManager, this.reminder);
+        }
     }
 }
