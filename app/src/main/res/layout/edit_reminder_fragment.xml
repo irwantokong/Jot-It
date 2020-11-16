@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewModel"
+            type="id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui.EditReminderViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/small_margin"
+        tools:context=".ui.EditReminderFragment">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/edit_reminder_scroll_view"
+            android:scrollbars="none"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_reminder_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Title"
+                    android:text="@={viewModel._titleField}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/edit_reminder_date_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/edit_reminder_title">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/edit_reminder_date_label"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/date"
+                        app:layout_constraintBottom_toBottomOf="@+id/edit_reminder_date"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/edit_reminder_date"
+                        app:layout_constraintTop_toTopOf="@+id/edit_reminder_date" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/edit_reminder_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="24dp"
+                        android:text="@={viewModel._dateField}"
+                        app:layout_constraintLeft_toRightOf="@id/edit_reminder_date_label"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/edit_reminder_time_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/edit_reminder_date_wrapper">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/edit_reminder_time_label"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/time"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/edit_reminder_time"
+                        app:layout_constraintTop_toTopOf="@+id/edit_reminder_time" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/edit_reminder_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="24dp"
+                        android:text="@={viewModel._timeField}"
+                        app:layout_constraintLeft_toRightOf="@id/edit_reminder_time_label"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </FrameLayout>
+</layout>

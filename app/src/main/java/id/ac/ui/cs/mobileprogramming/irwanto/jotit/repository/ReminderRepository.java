@@ -30,19 +30,19 @@ public class ReminderRepository {
         return reminderDAO.getReminderById(reminderId);
     }
 
-    void insert(Reminder reminder) {
+    public void insert(Reminder reminder) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             reminderDAO.insertReminder(reminder);
         });
     }
 
-    void update(Reminder reminder) {
+    public void update(Reminder reminder) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             reminderDAO.updateReminder(reminder);
         });
     }
 
-    void delete(Reminder reminder) {
+    public void delete(Reminder reminder) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             reminderDAO.deleteReminder(reminder);
         });

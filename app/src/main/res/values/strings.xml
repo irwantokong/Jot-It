@@ -6,4 +6,6 @@
     <string name="option_menu_back">Back</string>
     <string name="option_menu_delete">Delete</string>
     <string name="option_menu_edit">Edit</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
 </resources>
