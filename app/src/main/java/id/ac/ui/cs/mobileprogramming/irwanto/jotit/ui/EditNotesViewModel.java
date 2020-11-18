@@ -19,6 +19,7 @@ public class EditNotesViewModel extends AndroidViewModel {
     public EditNotesViewModel(Application application) {
         super(application);
         noteRepository = new NoteRepository(application);
+        editableNote = new Note();
     }
 
     public void saveNote(String noteId) {
@@ -35,10 +36,21 @@ public class EditNotesViewModel extends AndroidViewModel {
     public void initNote(String noteId) {
         if (noteId != null) {
             editableNote = noteRepository.getNoteById(noteId);
-        } else {
-            editableNote = new Note();
         }
+
         _titleTextField.setValue(editableNote.title);
         _descTextField.setValue(editableNote.description);
+    }
+
+    public void setImageFilePath(String path) {
+        editableNote.imagePath = path;
+    }
+
+    public String getImageFilePath() {
+        return editableNote.imagePath;
+    }
+
+    public String getNoteImageFilename() {
+        return editableNote.getImageFilename();
     }
 }

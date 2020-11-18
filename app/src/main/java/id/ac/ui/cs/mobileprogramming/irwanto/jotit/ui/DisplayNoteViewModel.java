@@ -27,4 +27,8 @@ public class DisplayNoteViewModel extends AndroidViewModel {
     public void deleteNote() {
         noteRepository.delete(viewedNote.getValue());
     }
+
+    public LiveData<Note> getViewedNote() {
+        return viewedNote;
+    }
 }

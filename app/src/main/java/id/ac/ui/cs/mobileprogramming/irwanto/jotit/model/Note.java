@@ -21,4 +21,11 @@ public class Note {
 
     @ColumnInfo(name = "description")
     public String description;
+
+    @ColumnInfo(name = "image_path")
+    public String imagePath;
+
+    public String getImageFilename() {
+        return "IMG_" + noteId + ".jpg";
+    }
 }

@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/edit_note_take_picture"
+        android:icon="@drawable/ic_add_a_photo"
+        app:showAsAction="always"
+        android:title="@string/option_menu_take_picture"/>
+    <item
         android:id="@+id/edit_note_done"
         android:icon="@drawable/ic_done"
         app:showAsAction="always"

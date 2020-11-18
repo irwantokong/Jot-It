@@ -19,7 +19,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
+import java.io.File;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.databinding.DisplayNoteFragmentBinding;
 
@@ -28,7 +36,11 @@ public class DisplayNoteFragment extends Fragment {
     private DisplayNoteViewModel mViewModel;
     private DisplayNoteFragmentBinding binding;
     private FragmentManager fragmentManager;
+    private View view;
     private String noteId;
+
+    @BindView(R.id.display_note_image)
+    ImageView imageView;
 
     public static DisplayNoteFragment newInstance() {
         return new DisplayNoteFragment();
@@ -42,7 +54,9 @@ public class DisplayNoteFragment extends Fragment {
         setHasOptionsMenu(true);
         binding = DataBindingUtil.inflate(inflater, R.layout.display_note_fragment, container, false);
         binding.setLifecycleOwner(this);
-        return binding.getRoot();
+        View view = binding.getRoot();
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
@@ -84,6 +98,19 @@ public class DisplayNoteFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getActivity().getApplication())).get(DisplayNoteViewModel.class);
         mViewModel.setNote(noteId);
         binding.setViewModel(mViewModel);
+
+        mViewModel.viewedNote.observe(this, note -> {
+            loadImage(note.imagePath);
+        });
+    }
+
+    public void loadImage(String imagePath) {
+        if (imagePath != null) {
+            File imageFile = new File(imagePath);
+            if (imageFile.exists()){
+                Glide.with(this).load(imageFile).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(imageView);
+            }
+        }
     }
 
     public void setupToolbar(boolean home) {
@@ -94,5 +121,6 @@ public class DisplayNoteFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         setupToolbar(false);
+        binding = null;
     }
 }
