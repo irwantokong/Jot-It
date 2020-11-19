@@ -25,7 +25,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -34,12 +36,16 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnItemSelected;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.MainActivity;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.adapter.CategoryAdapter;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.databinding.EditNotesFragmentBinding;
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Category;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -48,12 +54,17 @@ public class EditNotesFragment extends Fragment {
     private FragmentManager fragmentManager;
     private EditNotesViewModel mViewModel;
     private EditNotesFragmentBinding binding;
+    private CategoryAdapter categoryAdapter;
     private String noteId;
     private View view;
     private String currentPhotoPath;
+    private List<Category> categoryList;
 
     @BindView(R.id.edit_note_image)
     ImageView imageView;
+
+    @BindView(R.id.edit_note_category_spinner)
+    Spinner categorySpinner;
 
     public static EditNotesFragment newInstance() {
         return new EditNotesFragment();
@@ -65,12 +76,19 @@ public class EditNotesFragment extends Fragment {
         if (this.getArguments() != null) {
             noteId = this.getArguments().getString("noteId", null);
         }
+
         fragmentManager = getActivity().getSupportFragmentManager();
+
         setHasOptionsMenu(true);
+
         binding = DataBindingUtil.inflate(inflater, R.layout.edit_notes_fragment, container, false);
         binding.setLifecycleOwner(this);
         view = binding.getRoot();
         ButterKnife.bind(this, view);
+
+        categoryAdapter = new CategoryAdapter(getContext());
+        categorySpinner.setAdapter(categoryAdapter);
+
         return view;
     }
 
@@ -107,8 +125,32 @@ public class EditNotesFragment extends Fragment {
         setupToolbar(true);
         mViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getActivity().getApplication())).get(EditNotesViewModel.class);
         binding.setViewModel(mViewModel);
+
+        mViewModel.getAllCategories().observe(this, categories -> {
+            categoryList = categories;
+            Category noCategory = new Category();
+            noCategory.name = getString(R.string.no_category).toUpperCase();
+            categoryList.add(0, noCategory);
+            categoryAdapter.clear();
+            categoryAdapter.addAll(categories);
+        });
+
         mViewModel.initNote(noteId);
-        loadImage();
+        if (noteId != null) {
+            mViewModel.getLoadedNote().observe(this, note -> {
+                if (note != null) {
+                    mViewModel.setEditableNote(note);
+                    loadImage();
+
+                    for (int i = 0; i < categoryList.size(); i++) {
+                        if (categoryList.get(i).name.equals(note.category.name)) {
+                            categorySpinner.setSelection(i);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
     }
 
     private void loadImage() {
@@ -166,5 +208,11 @@ public class EditNotesFragment extends Fragment {
             }
             mViewModel.setImageFilePath(currentPhotoPath);
         }
+    }
+
+    @OnItemSelected(R.id.edit_note_category_spinner)
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Category category = (Category) parent.getItemAtPosition(position);
+        mViewModel.setCategory(category);
     }
 }

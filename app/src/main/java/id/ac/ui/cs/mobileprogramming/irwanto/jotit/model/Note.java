@@ -2,6 +2,7 @@ package id.ac.ui.cs.mobileprogramming.irwanto.jotit.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -24,6 +25,9 @@ public class Note {
 
     @ColumnInfo(name = "image_path")
     public String imagePath;
+
+    @Embedded(prefix = "category_")
+    public Category category;
 
     public String getImageFilename() {
         return "IMG_" + noteId + ".jpg";

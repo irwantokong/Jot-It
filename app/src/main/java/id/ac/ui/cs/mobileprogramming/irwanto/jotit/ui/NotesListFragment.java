@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,29 +13,46 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textview.MaterialTextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.adapter.CategoryAdapter;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.adapter.NotesListAdapter;
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Category;
 
 public class NotesListFragment extends Fragment implements NotesListAdapter.ListItemOnClickListener {
     @BindView(R.id.add_note_fab)
-    FloatingActionButton add_note_fab;
+    FloatingActionButton addNoteFAB;
 
     @BindView(R.id.notes_recycler_view)
     RecyclerView notesRecyclerView;
 
+    @BindView(R.id.category_spinner)
+    Spinner categorySpinner;
+
+    @BindView(R.id.remove_category)
+    MaterialTextView removeCategory;
+
     private FragmentManager fragmentManager;
     private NotesListViewModel mViewModel;
     private NotesListAdapter adapter;
+    private CategoryAdapter categoryAdapter;
 
     public static NotesListFragment newInstance() {
         return new NotesListFragment();
@@ -45,15 +63,80 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.notes_list_fragment, container, false);
         ButterKnife.bind(this, view);
+
         fragmentManager = getActivity().getSupportFragmentManager();
-        adapter = new NotesListAdapter(new NotesListAdapter.NoteDiff(), this::onListItemClick);
+
+        adapter = new NotesListAdapter(new NotesListAdapter.NoteDiff(), this::onNotesListItemClick);
         notesRecyclerView.setAdapter(adapter);
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        categoryAdapter = new CategoryAdapter(getContext());
+        categorySpinner.setAdapter(categoryAdapter);
         return view;
     }
 
+    @OnItemSelected(R.id.category_spinner)
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        removeCategory.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
+
+        Category category = (Category) parent.getItemAtPosition(position);
+        mViewModel.filterNotesByCategory(category, position == 0 ? true : false);
+    }
+
+    @OnClick(R.id.add_category)
+    public void onClickAddCategory() {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
+
+        TextInputEditText textInput = new TextInputEditText(getContext());
+        textInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        textInput.setHint(R.string.add_category_hint);
+
+        builder.setTitle(getString(R.string.add_category))
+                .setView(textInput)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                })
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String input = textInput.getEditableText().toString().toUpperCase();
+                        mViewModel.addNewCategory(input);
+                    }
+                });
+
+        builder.create();
+        builder.show();
+    }
+
+    @OnClick(R.id.remove_category)
+    public void onClickRemoveCategory() {
+        Category category = (Category) categorySpinner.getSelectedItem();
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
+
+        builder.setTitle(getString(R.string.remove_category) + " " + category.name + "?")
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                })
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mViewModel.removeCategory(category);
+                    }
+                });
+
+        builder.create();
+        builder.show();
+    }
+
     @Override
-    public void onListItemClick(int position) {
+    public void onNotesListItemClick(int position) {
         Bundle bundle = new Bundle();
         String noteId = adapter.getCurrentList().get(position).noteId;
         bundle.putString("noteId", noteId);
@@ -70,7 +153,7 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        add_note_fab.setOnClickListener(new View.OnClickListener() {
+        addNoteFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -88,6 +171,15 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
 
         mViewModel.getAllNotes().observe(this, notes -> {
             adapter.submitList(notes);
+        });
+
+        mViewModel.getAllCategories().observe(this, categories -> {
+            categoryAdapter.clear();
+            categoryAdapter.addAll(categories);
+            Category allCategory = new Category();
+            allCategory.name = getString(R.string.all_categories).toUpperCase();
+            categoryAdapter.insert(allCategory, 0);
+            categorySpinner.setSelection(0);
         });
     }
 

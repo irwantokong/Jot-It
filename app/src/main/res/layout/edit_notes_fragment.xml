@@ -40,10 +40,21 @@
                     android:id="@+id/edit_note_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    app:layout_constraintHorizontal_weight="2"
                     android:hint="Title"
                     android:text="@={viewModel._titleTextField}"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/edit_note_category_spinner"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/edit_note_image" />
+
+                <Spinner
+                    android:id="@+id/edit_note_category_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintBottom_toTopOf="@+id/edit_note_description"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/edit_note_title"
                     app:layout_constraintTop_toBottomOf="@id/edit_note_image" />
 
                 <com.google.android.material.textfield.TextInputEditText

@@ -1,10 +1,12 @@
 package id.ac.ui.cs.mobileprogramming.irwanto.jotit.repository;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -20,27 +22,41 @@ public class NoteRepository {
         noteDAO = db.noteDAO();
     }
 
-    public LiveData<List<Note>> getAllNotes() {
-        return noteDAO.getAllNotes();
+    public List<Note> getAllNotes() {
+        Future<List<Note>> future = AppDatabase.databaseWriteExecutor.submit(new Callable<List<Note>>() {
+            @Override
+            public List<Note> call() throws Exception {
+                return noteDAO.getAllNotes();
+            }
+        });
+
+        try {
+            return (List<Note>) future.get();
+        } catch (ExecutionException | InterruptedException e){
+            Log.e("NoteRepository", e.toString());
+        }
+
+        return null;
     }
 
     public LiveData<Note> getLiveDataNoteById(String noteId) {
         return noteDAO.getLivaDataNoteById(noteId);
     }
 
-    public Note getNoteById(String noteId) {
-        final Note[] note = new Note[1];
+    public List<Note> getNotesOfCategoryId(int categoryId) {
+        Future<List<Note>> future = AppDatabase.databaseWriteExecutor.submit(new Callable<List<Note>>() {
+            @Override
+            public List<Note> call() throws Exception {
+                return noteDAO.getNotesOfCategory(categoryId);
+            }
+        });
+
         try {
-            AppDatabase.databaseWriteExecutor.submit(new Runnable() {
-                @Override
-                public void run() {
-                    note[0] = noteDAO.getNoteById(noteId);
-                }
-            }).get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
+            return future.get();
+        } catch (ExecutionException | InterruptedException e){
+            Log.e("NoteRepository", e.toString());
         }
-        return note[0];
+        return null;
     }
 
     public void insert(Note note) {

@@ -17,7 +17,7 @@ import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Note;
 
 public class NotesListAdapter extends ListAdapter<Note, NotesListAdapter.NoteViewHolder> {
     public interface ListItemOnClickListener {
-        void onListItemClick(int position);
+        void onNotesListItemClick(int position);
     }
     final private ListItemOnClickListener listItemOnClickListener;
 
@@ -69,7 +69,7 @@ public class NotesListAdapter extends ListAdapter<Note, NotesListAdapter.NoteVie
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            listItemOnClickListener.onListItemClick(position);
+            listItemOnClickListener.onNotesListItemClick(position);
         }
     }
 }

@@ -9,4 +9,11 @@
     <string name="option_menu_take_picture">Take a picture</string>
     <string name="date">Date</string>
     <string name="time">Time</string>
+    <string name="add_category">Add Category</string>
+    <string name="remove_category">Remove Category</string>
+    <string name="all_categories">All Notes</string>
+    <string name="cancel">cancel</string>
+    <string name="ok">ok</string>
+    <string name="add_category_hint">New category name</string>
+    <string name="no_category">(no category)</string>
 </resources>
