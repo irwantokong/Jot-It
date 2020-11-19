@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Jot It</string>
+    <string name="bottom_nav_note_title">Catatan Saya</string>
+    <string name="bottom_nav_reminder_title">Pengingat Saya</string>
+    <string name="option_menu_save">Simpan</string>
+    <string name="option_menu_back">Kembali</string>
+    <string name="option_menu_delete">Hapus</string>
+    <string name="option_menu_edit">Sunting</string>
+    <string name="option_menu_take_picture">Ambil foto</string>
+    <string name="date">Tanggal</string>
+    <string name="time">Waktu</string>
+    <string name="add_category">Tambah kategori</string>
+    <string name="remove_category">Hapus kategori</string>
+    <string name="all_categories">Semua catatan</string>
+    <string name="cancel">batal</string>
+    <string name="ok">ok</string>
+    <string name="add_category_hint">Nama kategori baru</string>
+    <string name="no_category">(tidak ada kategori)</string>
+</resources>
