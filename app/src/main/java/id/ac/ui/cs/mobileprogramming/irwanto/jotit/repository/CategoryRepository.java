@@ -23,13 +23,13 @@ public class CategoryRepository {
     }
 
     public void insert(Category category) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
+        AppDatabase.databaseExecutor.execute(() -> {
             categoryDAO.insertCategory(category);
         });
     }
 
     public void delete(Category category) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
+        AppDatabase.databaseExecutor.execute(() -> {
             categoryDAO.deleteCategory(category);
         });
     }

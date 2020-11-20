@@ -25,12 +25,13 @@ import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.adapter.ReminderListAdapter;
 
 public class RemindersListFragment extends Fragment implements ReminderListAdapter.ListItemOnClickListener {
-    @BindView(R.id.reminders_list_recycler_view)
-    RecyclerView recyclerView;
 
     private RemindersListViewModel mViewModel;
     private FragmentManager fragmentManager;
     private ReminderListAdapter adapter;
+
+    @BindView(R.id.reminders_list_recycler_view)
+    RecyclerView recyclerView;
 
     public static RemindersListFragment newInstance() {
         return new RemindersListFragment();
@@ -57,15 +58,6 @@ public class RemindersListFragment extends Fragment implements ReminderListAdapt
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getActivity().getApplication())).get(RemindersListViewModel.class);
-        mViewModel.getAllReminder().observe(this, reminders -> {
-            adapter.submitList(reminders);
-        });
-    }
-
-    @Override
     public void onListItemClick(int position) {
         Bundle bundle = new Bundle();
         String reminderId = adapter.getCurrentList().get(position).reminderId;
@@ -78,5 +70,14 @@ public class RemindersListFragment extends Fragment implements ReminderListAdapt
         fragmentTransaction.replace(R.id.activity_container, fragment);
         fragmentTransaction.addToBackStack(this.getClass().getName());
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getActivity().getApplication())).get(RemindersListViewModel.class);
+        mViewModel.getAllReminder().observe(this, reminders -> {
+            adapter.submitList(reminders);
+        });
     }
 }

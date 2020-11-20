@@ -23,7 +23,7 @@ public class NoteRepository {
     }
 
     public List<Note> getAllNotes() {
-        Future<List<Note>> future = AppDatabase.databaseWriteExecutor.submit(new Callable<List<Note>>() {
+        Future<List<Note>> future = AppDatabase.databaseExecutor.submit(new Callable<List<Note>>() {
             @Override
             public List<Note> call() throws Exception {
                 return noteDAO.getAllNotes();
@@ -33,7 +33,7 @@ public class NoteRepository {
         try {
             return (List<Note>) future.get();
         } catch (ExecutionException | InterruptedException e){
-            Log.e("NoteRepository", e.toString());
+            Log.e("NoteRepository", e.getMessage());
         }
 
         return null;
@@ -44,7 +44,7 @@ public class NoteRepository {
     }
 
     public List<Note> getNotesOfCategoryId(int categoryId) {
-        Future<List<Note>> future = AppDatabase.databaseWriteExecutor.submit(new Callable<List<Note>>() {
+        Future<List<Note>> future = AppDatabase.databaseExecutor.submit(new Callable<List<Note>>() {
             @Override
             public List<Note> call() throws Exception {
                 return noteDAO.getNotesOfCategory(categoryId);
@@ -60,19 +60,19 @@ public class NoteRepository {
     }
 
     public void insert(Note note) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
+        AppDatabase.databaseExecutor.execute(() -> {
             noteDAO.insertNote(note);
         });
     }
 
     public void update(Note note) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
+        AppDatabase.databaseExecutor.execute(() -> {
             noteDAO.updateNote(note);
         });
     }
 
     public void delete(Note note) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
+        AppDatabase.databaseExecutor.execute(() -> {
             noteDAO.deleteNote(note);
         });
     }

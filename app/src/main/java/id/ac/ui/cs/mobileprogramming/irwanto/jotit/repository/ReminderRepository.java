@@ -1,6 +1,7 @@
 package id.ac.ui.cs.mobileprogramming.irwanto.jotit.repository;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -11,7 +12,6 @@ import java.util.concurrent.Future;
 
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.database.AppDatabase;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.database.ReminderDAO;
-import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Note;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Reminder;
 
 public class ReminderRepository {
@@ -30,50 +30,36 @@ public class ReminderRepository {
         return reminderDAO.getLivaDataReminderById(reminderId);
     }
 
-    public Reminder getReminderById(String reminderId) {
-        final Reminder[] reminder = new Reminder[1];
-        try {
-            AppDatabase.databaseWriteExecutor.submit(new Runnable() {
-                @Override
-                public void run() {
-                    reminder[0] = reminderDAO.getReminderById(reminderId);
-                }
-            }).get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return reminder[0];
-    }
-
     public Reminder getLatestReminder() {
-        final Reminder[] reminder = new Reminder[1];
+        Future<Reminder> future = AppDatabase.databaseExecutor.submit(new Callable<Reminder>() {
+            @Override
+            public Reminder call() throws Exception {
+                return reminderDAO.getLatestReminder();
+            }
+        });
+
         try {
-            AppDatabase.databaseWriteExecutor.submit(new Runnable() {
-                @Override
-                public void run() {
-                    reminder[0] = reminderDAO.getLatestReminder();
-                }
-            }).get();
+            return future.get();
         } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
+            Log.e("ReminderRepository", e.getMessage());
         }
-        return reminder[0];
+        return null;
     }
 
     public void insert(Reminder reminder) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
+        AppDatabase.databaseExecutor.execute(() -> {
             reminderDAO.insertReminder(reminder);
         });
     }
 
     public void update(Reminder reminder) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
+        AppDatabase.databaseExecutor.execute(() -> {
             reminderDAO.updateReminder(reminder);
         });
     }
 
     public void delete(Reminder reminder) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
+        AppDatabase.databaseExecutor.execute(() -> {
             reminderDAO.deleteReminder(reminder);
         });
     }

@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,12 +49,16 @@ public class DisplayNoteFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         noteId = this.getArguments().getString("noteId");
+
         fragmentManager = getActivity().getSupportFragmentManager();
+
         setHasOptionsMenu(true);
+
         binding = DataBindingUtil.inflate(inflater, R.layout.display_note_fragment, container, false);
         binding.setLifecycleOwner(this);
         View view = binding.getRoot();
         ButterKnife.bind(this, view);
+
         return view;
     }
 

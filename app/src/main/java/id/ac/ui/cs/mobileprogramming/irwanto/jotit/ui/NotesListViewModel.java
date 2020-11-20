@@ -1,7 +1,6 @@
 package id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -15,30 +14,30 @@ import id.ac.ui.cs.mobileprogramming.irwanto.jotit.repository.CategoryRepository
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.repository.NoteRepository;
 
 public class NotesListViewModel extends AndroidViewModel {
-    private NoteRepository noteRepository;
-    private CategoryRepository categoryRepository;
+    private final NoteRepository noteRepository;
+    private final CategoryRepository categoryRepository;
 
-    private MutableLiveData<List<Note>> mAllNotes = new MutableLiveData<>();
-    private LiveData<List<Category>> mAllCategories;
+    private final MutableLiveData<List<Note>> allNotes = new MutableLiveData<>();
+    private final LiveData<List<Category>> allCategories;
 
     public NotesListViewModel(Application application) {
         super(application);
         noteRepository = new NoteRepository(application);
         categoryRepository = new CategoryRepository(application);
-        mAllNotes.setValue(noteRepository.getAllNotes());
-        mAllCategories = categoryRepository.getAllCategories();
+        allNotes.setValue(noteRepository.getAllNotes());
+        allCategories = categoryRepository.getAllCategories();
     }
 
     public MutableLiveData<List<Note>> getAllNotes() {
-        return mAllNotes;
+        return allNotes;
     }
 
     public LiveData<List<Category>> getAllCategories() {
-        return mAllCategories;
+        return allCategories;
     }
 
     public void filterNotesByCategory(Category category, boolean all) {
-        mAllNotes.setValue(all ? noteRepository.getAllNotes() : noteRepository.getNotesOfCategoryId(category.id));
+        allNotes.setValue(all ? noteRepository.getAllNotes() : noteRepository.getNotesOfCategoryId(category.id));
     }
 
     public void addNewCategory(String categoryName) {

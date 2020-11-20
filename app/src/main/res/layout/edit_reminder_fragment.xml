@@ -28,8 +28,8 @@
                     android:id="@+id/edit_reminder_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Title"
-                    android:text="@={viewModel._titleField}"
+                    android:hint="@string/title_hint"
+                    android:text="@={viewModel.titleField}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -57,7 +57,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:textSize="24dp"
-                        android:text="@={viewModel._dateField}"
+                        android:text="@={viewModel.dateField}"
                         app:layout_constraintLeft_toRightOf="@id/edit_reminder_date_label"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent" />
@@ -87,7 +87,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:textSize="24dp"
-                        android:text="@={viewModel._timeField}"
+                        android:text="@={viewModel.timeField}"
                         app:layout_constraintLeft_toRightOf="@id/edit_reminder_time_label"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent" />

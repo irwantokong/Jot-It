@@ -41,8 +41,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintHorizontal_weight="2"
-                    android:hint="Title"
-                    android:text="@={viewModel._titleTextField}"
+                    android:hint="@string/title_hint"
+                    android:text="@={viewModel.titleTextField}"
                     app:layout_constraintEnd_toStartOf="@id/edit_note_category_spinner"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/edit_note_image" />
@@ -61,8 +61,8 @@
                     android:id="@+id/edit_note_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Description"
-                    android:text="@={viewModel._descTextField}"
+                    android:hint="@string/description_hint"
+                    android:text="@={viewModel.descTextField}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/edit_note_title"/>

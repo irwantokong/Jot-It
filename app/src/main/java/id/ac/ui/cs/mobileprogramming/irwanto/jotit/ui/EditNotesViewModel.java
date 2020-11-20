@@ -16,48 +16,50 @@ import id.ac.ui.cs.mobileprogramming.irwanto.jotit.repository.CategoryRepository
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.repository.NoteRepository;
 
 public class EditNotesViewModel extends AndroidViewModel {
-    private NoteRepository noteRepository;
-    private CategoryRepository categoryRepository;
+    private final NoteRepository noteRepository;
     private Note editableNote;
 
     public LiveData<Note> loadedNote;
     public LiveData<List<Category>> allCategories;
-    public MutableLiveData<String> _titleTextField = new MutableLiveData<>();
-    public MutableLiveData<String> _descTextField = new MutableLiveData<>();
+    public MutableLiveData<String> titleTextField = new MutableLiveData<>();
+    public MutableLiveData<String> descTextField = new MutableLiveData<>();
 
     public EditNotesViewModel(Application application) {
         super(application);
         noteRepository = new NoteRepository(application);
-        categoryRepository = new CategoryRepository(application);
+        CategoryRepository categoryRepository = new CategoryRepository(application);
         allCategories = categoryRepository.getAllCategories();
     }
 
-    public void saveNote(String noteId) {
-        editableNote.title = (_titleTextField.getValue() == null || _titleTextField.getValue().isEmpty())
-                ? "(untitled)" : _titleTextField.getValue();
-        editableNote.description = _descTextField.getValue();
+    public void saveNote(boolean isEdit) {
+        editableNote.title = (titleTextField.getValue() == null || titleTextField.getValue().isEmpty())
+                ? "(untitled)" : titleTextField.getValue();
+        editableNote.description = descTextField.getValue();
 
-        if (noteId != null) {
+        if (isEdit) {
             noteRepository.update(editableNote);
         } else {
             noteRepository.insert(editableNote);
         }
     }
 
-    public void initNote(String noteId) {
-        if (noteId != null) {
+    public void initNote(String noteId, boolean isEdit) {
+        if (isEdit) {
             loadedNote = noteRepository.getLiveDataNoteById(noteId);
         } else {
             editableNote = new Note();
-            _titleTextField.setValue(editableNote.title);
-            _descTextField.setValue(editableNote.description);
+            updateUI();
         }
     }
 
     public void setEditableNote(Note note) {
         editableNote = note;
-        _titleTextField.setValue(editableNote.title);
-        _descTextField.setValue(editableNote.description);
+        updateUI();
+    }
+
+    private void updateUI() {
+        titleTextField.setValue(editableNote.title);
+        descTextField.setValue(editableNote.description);
     }
 
     public void setImageFilePath(String path) {

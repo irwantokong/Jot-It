@@ -1,5 +1,6 @@
 package id.ac.ui.cs.mobileprogramming.irwanto.jotit.util;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -29,6 +30,7 @@ public class AlarmManagerUtil {
         alarmManager.cancel(pendingIntent);
     }
 
+    @SuppressLint("SimpleDateFormat")
     private static long getTriggerTime(Reminder reminder) {
         Date date = new Date();
         Date time = new Date();
