@@ -4,9 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -16,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,6 +57,7 @@ public class EditNotesFragment extends Fragment {
     private boolean isEdit;
     private String currentPhotoPath;
     private List<Category> categoryList;
+    private int orientation;
 
     @BindView(R.id.edit_note_image)
     ImageView imageView;
@@ -75,6 +79,7 @@ public class EditNotesFragment extends Fragment {
 
         fragmentManager = getActivity().getSupportFragmentManager();
 
+        orientation = getResources().getConfiguration().orientation;
         setHasOptionsMenu(true);
 
         binding = DataBindingUtil.inflate(inflater, R.layout.edit_notes_fragment, container, false);
@@ -90,8 +95,11 @@ public class EditNotesFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.clear();
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.edit_note_options_menu, menu);
+        MenuItem photoOption = menu.findItem(R.id.edit_note_take_picture);
+        photoOption.setVisible(orientation == Configuration.ORIENTATION_PORTRAIT);
     }
 
     @Override
@@ -102,7 +110,23 @@ public class EditNotesFragment extends Fragment {
                 return true;
             case R.id.edit_note_done:
                 mViewModel.saveNote(isEdit);
-                fragmentManager.popBackStack();
+                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    fragmentManager.popBackStack();
+                } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    Bundle bundle = new Bundle();
+                    String noteId = mViewModel.getEditableNote().noteId;
+                    bundle.putString("noteId", noteId);
+
+                    DisplayNoteFragment fragment = new DisplayNoteFragment();
+                    fragment.setArguments(bundle);
+
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.activity_right_container, fragment);
+                    fragmentTransaction.commit();
+
+                    NotesListFragment notesListFragment = (NotesListFragment) fragmentManager.findFragmentByTag("MainActivity");
+                    notesListFragment.updateView();
+                }
                 return true;
             case R.id.edit_note_take_picture:
                 dispatchTakePictureIntent();
@@ -152,6 +176,7 @@ public class EditNotesFragment extends Fragment {
     }
 
     public void setupToolbar(boolean showHome) {
+        showHome = ((orientation == Configuration.ORIENTATION_PORTRAIT) && showHome);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(showHome);
     }
 

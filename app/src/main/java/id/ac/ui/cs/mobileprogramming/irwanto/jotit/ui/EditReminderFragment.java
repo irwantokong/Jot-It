@@ -3,10 +3,12 @@ package id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -36,6 +38,7 @@ public class EditReminderFragment extends Fragment {
     private EditReminderFragmentBinding binding;
     private String reminderId;
     private boolean isEdit = false;
+    private int orientation;
 
     public static EditReminderFragment newInstance() {
         return new EditReminderFragment();
@@ -49,6 +52,7 @@ public class EditReminderFragment extends Fragment {
             isEdit = true;
         }
         setHasOptionsMenu(true);
+        orientation = getResources().getConfiguration().orientation;
 
         fragmentManager = getActivity().getSupportFragmentManager();
 
@@ -111,14 +115,21 @@ public class EditReminderFragment extends Fragment {
                 return true;
             case R.id.edit_reminder_delete:
                 mViewModel.deleteReminder();
-                fragmentManager.popBackStack();
+                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    fragmentManager.popBackStack();
+                } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.remove(this);
+                    fragmentTransaction.commit();
+                }
                 return true;
         }
         return false;
     }
 
-    public void setupToolbar(boolean home) {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(home);
+    public void setupToolbar(boolean showHome) {
+        showHome = ((orientation == Configuration.ORIENTATION_PORTRAIT) && showHome);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(showHome);
     }
 
     @Override

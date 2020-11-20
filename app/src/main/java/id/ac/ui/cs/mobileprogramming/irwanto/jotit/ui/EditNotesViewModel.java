@@ -57,6 +57,10 @@ public class EditNotesViewModel extends AndroidViewModel {
         updateUI();
     }
 
+    public Note getEditableNote() {
+        return editableNote;
+    }
+
     private void updateUI() {
         titleTextField.setValue(editableNote.title);
         descTextField.setValue(editableNote.description);

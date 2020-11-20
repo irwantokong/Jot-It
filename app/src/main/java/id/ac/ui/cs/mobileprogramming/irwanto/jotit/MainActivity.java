@@ -8,8 +8,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -26,14 +28,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        loadFragment(new NotesListFragment());
+
+        if (savedInstanceState == null) {
+            loadFragment(new NotesListFragment());
+        } else {
+            loadFragment(fragmentManager.findFragmentByTag("MainActivity"));
+            if (fragmentManager.findFragmentByTag("right_container") != null) {
+                Fragment f = fragmentManager.findFragmentByTag("right_container");
+                fragmentManager.beginTransaction().remove(f).commit();
+            }
+        }
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
         bottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
         createNotificationChannel();
     }
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         Fragment fragment = null;
 
         switch (item.getItemId()) {
@@ -51,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean loadFragment(Fragment fragment) {
         if (fragment != null) {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.activity_container, fragment);
+            fragmentTransaction.replace(R.id.activity_container, fragment, "MainActivity");
             fragmentTransaction.commit();
             return true;
         }

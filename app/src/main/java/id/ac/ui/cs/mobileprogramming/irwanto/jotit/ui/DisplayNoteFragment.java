@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -35,8 +36,8 @@ public class DisplayNoteFragment extends Fragment {
     private DisplayNoteViewModel mViewModel;
     private DisplayNoteFragmentBinding binding;
     private FragmentManager fragmentManager;
-    private View view;
     private String noteId;
+    private int orientation;
 
     @BindView(R.id.display_note_image)
     ImageView imageView;
@@ -52,6 +53,7 @@ public class DisplayNoteFragment extends Fragment {
 
         fragmentManager = getActivity().getSupportFragmentManager();
 
+        orientation = getResources().getConfiguration().orientation;
         setHasOptionsMenu(true);
 
         binding = DataBindingUtil.inflate(inflater, R.layout.display_note_fragment, container, false);
@@ -64,6 +66,7 @@ public class DisplayNoteFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.clear();
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.display_note_options_menu, menu);
     }
@@ -76,7 +79,16 @@ public class DisplayNoteFragment extends Fragment {
                 return true;
             case R.id.display_note_delete:
                 mViewModel.deleteNote();
-                fragmentManager.popBackStack();
+                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    fragmentManager.popBackStack();
+                } else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.remove(this);
+                    fragmentTransaction.commit();
+
+                    NotesListFragment notesListFragment = (NotesListFragment) fragmentManager.findFragmentByTag("MainActivity");
+                    notesListFragment.updateView();
+                }
                 return true;
             case R.id.display_note_edit:
                 Bundle bundle = new Bundle();
@@ -86,9 +98,16 @@ public class DisplayNoteFragment extends Fragment {
                 fragment.setArguments(bundle);
 
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.activity_container, fragment);
-                fragmentTransaction.addToBackStack(this.getClass().getName());
+                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    fragmentTransaction.replace(R.id.activity_container, fragment);
+                    fragmentTransaction.addToBackStack(this.getClass().getName());
+                } else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    fragmentTransaction.replace(R.id.activity_right_container, fragment, "right_container");
+                }
                 fragmentTransaction.commit();
+
+                NotesListFragment notesListFragment = (NotesListFragment) fragmentManager.findFragmentByTag("MainActivity");
+                notesListFragment.updateView();
                 return true;
         }
         return false;
@@ -116,8 +135,9 @@ public class DisplayNoteFragment extends Fragment {
         }
     }
 
-    public void setupToolbar(boolean home) {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(home);
+    public void setupToolbar(boolean showHome) {
+        showHome = ((orientation == Configuration.ORIENTATION_PORTRAIT) && showHome);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(showHome);
     }
 
     @Override

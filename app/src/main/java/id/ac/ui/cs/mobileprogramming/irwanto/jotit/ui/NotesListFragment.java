@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -39,6 +42,8 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
     private NotesListViewModel mViewModel;
     private NotesListAdapter adapter;
     private CategoryAdapter categoryAdapter;
+    private Category category;
+    private int selectedPosition;
 
     @BindView(R.id.notes_recycler_view)
     RecyclerView notesRecyclerView;
@@ -75,7 +80,8 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         removeCategory.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
 
-        Category category = (Category) parent.getItemAtPosition(position);
+        category = (Category) parent.getItemAtPosition(position);
+        selectedPosition = position;
         mViewModel.filterNotesByCategory(category, position == 0);
     }
 
@@ -140,17 +146,29 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
         DisplayNoteFragment fragment = new DisplayNoteFragment();
         fragment.setArguments(bundle);
 
+        int orientation = getResources().getConfiguration().orientation;
+
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.activity_container, fragment);
-        transaction.addToBackStack(this.getClass().getName());
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            transaction.replace(R.id.activity_container, fragment);
+            transaction.addToBackStack(this.getClass().getName());
+        } else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+            transaction.replace(R.id.activity_right_container, fragment, "right_container");
+        }
         transaction.commit();
     }
 
     @OnClick(R.id.add_note_fab)
     public void onClickAddNote() {
+        int orientation = getResources().getConfiguration().orientation;
+
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.activity_container, new EditNotesFragment());
-        fragmentTransaction.addToBackStack(this.getClass().getName());
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            fragmentTransaction.replace(R.id.activity_container, new EditNotesFragment());
+            fragmentTransaction.addToBackStack(this.getClass().getName());
+        } else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+            fragmentTransaction.replace(R.id.activity_right_container, new EditNotesFragment(), "right_container");
+        }
         fragmentTransaction.commit();
     }
 
@@ -170,6 +188,10 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
             allCategory.name = getString(R.string.all_categories).toUpperCase();
             categoryAdapter.insert(allCategory, 0);
         });
+    }
+
+    public void updateView() {
+        mViewModel.filterNotesByCategory(category, selectedPosition == 0);
     }
 
 }
