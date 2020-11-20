@@ -21,7 +21,6 @@ public class AlarmManagerUtil {
         PendingIntent pendingIntent = AlarmReceiver.getAlarmPendingIntent(context, reminder);
 
         AlarmManagerCompat.setExactAndAllowWhileIdle(alarmManager, AlarmManager.ELAPSED_REALTIME_WAKEUP, getTriggerTime(reminder), pendingIntent);
-        Log.d("AMU", "alarm created of " + reminder.title);
     }
 
     public static void cancelAlarm(Context context, AlarmManager alarmManager, Reminder reminder) {

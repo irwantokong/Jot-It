@@ -16,4 +16,6 @@
     <string name="ok">ok</string>
     <string name="add_category_hint">New category name</string>
     <string name="no_category">(no category)</string>
+    <string name="notification_channel_name">Notification channel</string>
+    <string name="notification_channel_id">notification_channel</string>
 </resources>

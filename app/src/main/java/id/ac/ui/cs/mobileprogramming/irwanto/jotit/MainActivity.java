@@ -6,16 +6,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui.NotesListFragment;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui.RemindersListFragment;
 
@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         loadFragment(new NotesListFragment());
         bottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
+        createNotificationChannel();
     }
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -55,5 +56,17 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelName = getString(R.string.notification_channel_name);
+            String channelId = getString(R.string.notification_channel_id);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+            channel.enableVibration(true);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
