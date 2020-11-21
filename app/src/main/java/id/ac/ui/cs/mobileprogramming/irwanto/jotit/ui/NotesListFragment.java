@@ -1,7 +1,6 @@
 package id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui;
 
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.DialogInterface;
@@ -16,8 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.InputType;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -36,14 +33,15 @@ import id.ac.ui.cs.mobileprogramming.irwanto.jotit.adapter.CategoryAdapter;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.adapter.NotesListAdapter;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Category;
 
+import static id.ac.ui.cs.mobileprogramming.irwanto.jotit.util.Constants.RIGHT_CONTAINER_TAG;
+
 public class NotesListFragment extends Fragment implements NotesListAdapter.ListItemOnClickListener {
 
     private FragmentManager fragmentManager;
     private NotesListViewModel mViewModel;
     private NotesListAdapter adapter;
     private CategoryAdapter categoryAdapter;
-    private Category category;
-    private int selectedPosition;
+    private int orientation;
 
     @BindView(R.id.notes_recycler_view)
     RecyclerView notesRecyclerView;
@@ -66,7 +64,9 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
 
         fragmentManager = getActivity().getSupportFragmentManager();
 
-        adapter = new NotesListAdapter(new NotesListAdapter.NoteDiff(), this::onNotesListItemClick);
+        orientation = getResources().getConfiguration().orientation;
+
+        adapter = new NotesListAdapter(new NotesListAdapter.NoteDiff(), this);
         notesRecyclerView.setAdapter(adapter);
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -80,10 +80,8 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         removeCategory.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
 
-        category = (Category) parent.getItemAtPosition(position);
+        Category category = (Category) parent.getItemAtPosition(position);
         mViewModel.setCategory(category);
-//        selectedPosition = position;
-//        mViewModel.filterNotesByCategory(category, position == 0);
     }
 
     @OnClick(R.id.add_category)
@@ -147,30 +145,30 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
         DisplayNoteFragment fragment = new DisplayNoteFragment();
         fragment.setArguments(bundle);
 
-        int orientation = getResources().getConfiguration().orientation;
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            transaction.replace(R.id.activity_container, fragment);
-            transaction.addToBackStack(this.getClass().getName());
+            fragmentManager.beginTransaction()
+                    .replace(R.id.activity_left_container, fragment)
+                    .addToBackStack(this.getClass().getName())
+                    .commit();
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
-            transaction.replace(R.id.activity_right_container, fragment, "right_container");
+            fragmentManager.beginTransaction()
+                    .replace(R.id.activity_right_container, fragment, RIGHT_CONTAINER_TAG)
+                    .commit();
         }
-        transaction.commit();
     }
 
     @OnClick(R.id.add_note_fab)
     public void onClickAddNote() {
-        int orientation = getResources().getConfiguration().orientation;
-
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            fragmentTransaction.replace(R.id.activity_container, new EditNotesFragment());
-            fragmentTransaction.addToBackStack(this.getClass().getName());
+            fragmentManager.beginTransaction()
+                    .replace(R.id.activity_left_container, new EditNotesFragment())
+                    .addToBackStack(this.getClass().getName())
+                    .commit();
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
-            fragmentTransaction.replace(R.id.activity_right_container, new EditNotesFragment(), "right_container");
+            fragmentManager.beginTransaction()
+                    .replace(R.id.activity_right_container, new EditNotesFragment(), RIGHT_CONTAINER_TAG)
+                    .commit();
         }
-        fragmentTransaction.commit();
     }
 
     @Override

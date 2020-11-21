@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -119,9 +118,9 @@ public class EditNotesFragment extends Fragment {
                     DisplayNoteFragment fragment = new DisplayNoteFragment();
                     fragment.setArguments(bundle);
 
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.activity_right_container, fragment);
-                    fragmentTransaction.commit();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.activity_right_container, fragment)
+                            .commit();
                 }
                 return true;
             case R.id.edit_note_take_picture:

@@ -3,7 +3,6 @@ package id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.DatePickerDialog;
@@ -114,9 +113,7 @@ public class EditReminderFragment extends Fragment {
                 if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                     fragmentManager.popBackStack();
                 } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.remove(this);
-                    fragmentTransaction.commit();
+                    fragmentManager.beginTransaction().remove(this).commit();
                 }
                 return true;
             case R.id.edit_reminder_delete:
@@ -124,9 +121,7 @@ public class EditReminderFragment extends Fragment {
                 if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                     fragmentManager.popBackStack();
                 } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.remove(this);
-                    fragmentTransaction.commit();
+                    fragmentManager.beginTransaction().remove(this).commit();
                 }
                 return true;
         }

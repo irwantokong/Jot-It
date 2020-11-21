@@ -3,7 +3,6 @@ package id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.res.Configuration;
@@ -30,6 +29,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.databinding.DisplayNoteFragmentBinding;
+
+import static id.ac.ui.cs.mobileprogramming.irwanto.jotit.util.Constants.RIGHT_CONTAINER_TAG;
 
 public class DisplayNoteFragment extends Fragment {
 
@@ -82,9 +83,7 @@ public class DisplayNoteFragment extends Fragment {
                 if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                     fragmentManager.popBackStack();
                 } else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.remove(this);
-                    fragmentTransaction.commit();
+                    fragmentManager.beginTransaction().remove(this).commit();
                 }
                 return true;
             case R.id.display_note_edit:
@@ -94,14 +93,16 @@ public class DisplayNoteFragment extends Fragment {
                 EditNotesFragment fragment = new EditNotesFragment();
                 fragment.setArguments(bundle);
 
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    fragmentTransaction.replace(R.id.activity_container, fragment);
-                    fragmentTransaction.addToBackStack(this.getClass().getName());
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.activity_left_container, fragment)
+                            .addToBackStack(this.getClass().getName())
+                            .commit();
                 } else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
-                    fragmentTransaction.replace(R.id.activity_right_container, fragment, "right_container");
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.activity_right_container, fragment, RIGHT_CONTAINER_TAG)
+                            .commit();
                 }
-                fragmentTransaction.commit();
                 return true;
         }
         return false;

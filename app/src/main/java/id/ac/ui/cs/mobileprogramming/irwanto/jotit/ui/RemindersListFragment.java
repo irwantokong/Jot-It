@@ -13,17 +13,17 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.adapter.ReminderListAdapter;
+
+import static id.ac.ui.cs.mobileprogramming.irwanto.jotit.util.Constants.RIGHT_CONTAINER_TAG;
 
 public class RemindersListFragment extends Fragment implements ReminderListAdapter.ListItemOnClickListener {
 
@@ -49,7 +49,7 @@ public class RemindersListFragment extends Fragment implements ReminderListAdapt
 
         fragmentManager = getActivity().getSupportFragmentManager();
 
-        adapter = new ReminderListAdapter(new ReminderListAdapter.ReminderDiff(), this::onListItemClick);
+        adapter = new ReminderListAdapter(new ReminderListAdapter.ReminderDiff(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -58,15 +58,17 @@ public class RemindersListFragment extends Fragment implements ReminderListAdapt
 
     @OnClick(R.id.add_reminder_fab)
     public void addReminder() {
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            fragmentTransaction.replace(R.id.activity_container, new EditReminderFragment());
-            fragmentTransaction.addToBackStack(this.getClass().getName());
+            fragmentManager.beginTransaction()
+                    .replace(R.id.activity_left_container, new EditReminderFragment())
+                    .addToBackStack(this.getClass().getName())
+                    .commit();
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            fragmentTransaction.replace(R.id.activity_right_container, new EditReminderFragment(), "right_container");
-            fragmentTransaction.addToBackStack(this.getClass().getName());
+            fragmentManager.beginTransaction()
+                    .replace(R.id.activity_right_container, new EditReminderFragment(), RIGHT_CONTAINER_TAG)
+                    .addToBackStack(this.getClass().getName())
+                    .commit();
         }
-        fragmentTransaction.commit();
     }
 
     @Override
@@ -78,14 +80,16 @@ public class RemindersListFragment extends Fragment implements ReminderListAdapt
         EditReminderFragment fragment = new EditReminderFragment();
         fragment.setArguments(bundle);
 
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            fragmentTransaction.replace(R.id.activity_container, fragment);
-            fragmentTransaction.addToBackStack(this.getClass().getName());
+            fragmentManager.beginTransaction()
+                    .replace(R.id.activity_left_container, fragment)
+                    .addToBackStack(this.getClass().getName())
+                    .commit();
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            fragmentTransaction.replace(R.id.activity_right_container, fragment, "right_container");
+            fragmentManager.beginTransaction()
+                    .replace(R.id.activity_right_container, fragment, RIGHT_CONTAINER_TAG)
+                    .commit();
         }
-        fragmentTransaction.commit();
     }
 
     @Override
