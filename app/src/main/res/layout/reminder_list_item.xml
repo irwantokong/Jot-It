@@ -16,11 +16,14 @@
             android:id="@+id/reminders_item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/list_item_title"
+            android:textStyle="bold"
             android:maxLines="1"
             android:ellipsize="end"/>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/reminders_item_date_time"
+            android:textSize="@dimen/list_item_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

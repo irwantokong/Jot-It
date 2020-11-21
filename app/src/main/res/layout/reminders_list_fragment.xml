@@ -13,6 +13,8 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/all_reminder_title"
             android:text="@string/all_reminders"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/small_margin"
