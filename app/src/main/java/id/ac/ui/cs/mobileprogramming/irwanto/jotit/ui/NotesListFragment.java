@@ -33,6 +33,7 @@ import id.ac.ui.cs.mobileprogramming.irwanto.jotit.adapter.CategoryAdapter;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.adapter.NotesListAdapter;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Category;
 
+import static id.ac.ui.cs.mobileprogramming.irwanto.jotit.util.Constants.LEFT_CONTAINER_TAG;
 import static id.ac.ui.cs.mobileprogramming.irwanto.jotit.util.Constants.RIGHT_CONTAINER_TAG;
 
 public class NotesListFragment extends Fragment implements NotesListAdapter.ListItemOnClickListener {
@@ -42,6 +43,7 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
     private NotesListAdapter adapter;
     private CategoryAdapter categoryAdapter;
     private int orientation;
+    private boolean isTablet;
 
     @BindView(R.id.notes_recycler_view)
     RecyclerView notesRecyclerView;
@@ -65,6 +67,7 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
         fragmentManager = getActivity().getSupportFragmentManager();
 
         orientation = getResources().getConfiguration().orientation;
+        isTablet = getResources().getBoolean(R.bool.isTablet);
 
         adapter = new NotesListAdapter(new NotesListAdapter.NoteDiff(), this);
         notesRecyclerView.setAdapter(adapter);
@@ -146,28 +149,28 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
         DisplayNoteFragment fragment = new DisplayNoteFragment();
         fragment.setArguments(bundle);
 
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.activity_left_container, fragment)
-                    .addToBackStack(this.getClass().getName())
-                    .commit();
-        } else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (isTablet || orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentManager.beginTransaction()
                     .replace(R.id.activity_right_container, fragment, RIGHT_CONTAINER_TAG)
+                    .commit();
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.activity_left_container, fragment, LEFT_CONTAINER_TAG)
+                    .addToBackStack(this.getClass().getName())
                     .commit();
         }
     }
 
     @OnClick(R.id.add_note_fab)
     public void onClickAddNote() {
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.activity_left_container, new EditNotesFragment())
-                    .addToBackStack(this.getClass().getName())
-                    .commit();
-        } else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (isTablet || orientation == Configuration.ORIENTATION_LANDSCAPE) {
             fragmentManager.beginTransaction()
                     .replace(R.id.activity_right_container, new EditNotesFragment(), RIGHT_CONTAINER_TAG)
+                    .commit();
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.activity_left_container, new EditNotesFragment(), LEFT_CONTAINER_TAG)
+                    .addToBackStack(this.getClass().getName())
                     .commit();
         }
     }

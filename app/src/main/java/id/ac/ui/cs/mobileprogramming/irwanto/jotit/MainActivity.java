@@ -10,12 +10,16 @@ import android.app.NotificationManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui.DisplayNoteFragment;
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui.EditNotesFragment;
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui.EditReminderFragment;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui.NotesListFragment;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui.RemindersListFragment;
 
@@ -26,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private int orientation;
+    private boolean isTablet;
 
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
@@ -38,13 +43,28 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         orientation = getResources().getConfiguration().orientation;
+        isTablet = getResources().getBoolean(R.bool.isTablet);
+        Log.d("isTablet", "" + isTablet);
 
         if (savedInstanceState == null) {
             loadFragment(new NotesListFragment());
         } else {
-            if (fragmentManager.findFragmentByTag(RIGHT_CONTAINER_TAG) != null) {
-                Fragment f = fragmentManager.findFragmentByTag(RIGHT_CONTAINER_TAG);
-                fragmentManager.beginTransaction().remove(f).commit();
+            if (!isTablet) {
+                if (fragmentManager.findFragmentByTag(LEFT_CONTAINER_TAG) != null) {
+                    Fragment f = fragmentManager.findFragmentByTag(LEFT_CONTAINER_TAG);
+                    if (f instanceof EditReminderFragment) {
+                        fragmentManager.beginTransaction().remove(f).commit();
+                        loadFragment(new RemindersListFragment());
+                    } else if ((f instanceof EditNotesFragment) || (f instanceof DisplayNoteFragment)) {
+                        fragmentManager.beginTransaction().remove(f).commit();
+                        loadFragment(new NotesListFragment());
+                    }
+                }
+
+                if (fragmentManager.findFragmentByTag(RIGHT_CONTAINER_TAG) != null) {
+                    Fragment f = fragmentManager.findFragmentByTag(RIGHT_CONTAINER_TAG);
+                    fragmentManager.beginTransaction().remove(f).commit();
+                }
             }
         }
 
@@ -55,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (isTablet || (orientation == Configuration.ORIENTATION_LANDSCAPE)) {
             if (fragmentManager.findFragmentByTag(RIGHT_CONTAINER_TAG) != null) {
                 Fragment f = fragmentManager.findFragmentByTag(RIGHT_CONTAINER_TAG);
                 fragmentManager.beginTransaction().remove(f).commit();

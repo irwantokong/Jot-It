@@ -56,6 +56,7 @@ public class EditNotesFragment extends Fragment {
     private String currentPhotoPath;
     private List<Category> categoryList;
     private int orientation;
+    private boolean isTablet;
 
     @BindView(R.id.edit_note_image)
     ImageView imageView;
@@ -78,6 +79,7 @@ public class EditNotesFragment extends Fragment {
         fragmentManager = getActivity().getSupportFragmentManager();
 
         orientation = getResources().getConfiguration().orientation;
+        isTablet = getResources().getBoolean(R.bool.isTablet);
         setHasOptionsMenu(true);
 
         binding = DataBindingUtil.inflate(inflater, R.layout.edit_notes_fragment, container, false);
@@ -108,9 +110,7 @@ public class EditNotesFragment extends Fragment {
                 return true;
             case R.id.edit_note_done:
                 mViewModel.saveNote(isEdit);
-                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    fragmentManager.popBackStack();
-                } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                if (isTablet || orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     Bundle bundle = new Bundle();
                     String noteId = mViewModel.getEditableNote().noteId;
                     bundle.putString("noteId", noteId);
@@ -121,6 +121,8 @@ public class EditNotesFragment extends Fragment {
                     fragmentManager.beginTransaction()
                             .replace(R.id.activity_right_container, fragment)
                             .commit();
+                } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    fragmentManager.popBackStack();
                 }
                 return true;
             case R.id.edit_note_take_picture:
@@ -171,7 +173,7 @@ public class EditNotesFragment extends Fragment {
     }
 
     public void setupToolbar(boolean showHome) {
-        showHome = ((orientation == Configuration.ORIENTATION_PORTRAIT) && showHome);
+        showHome = (!isTablet && orientation == Configuration.ORIENTATION_PORTRAIT && showHome);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(showHome);
     }
 

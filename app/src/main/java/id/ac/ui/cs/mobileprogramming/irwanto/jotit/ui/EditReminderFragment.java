@@ -38,6 +38,7 @@ public class EditReminderFragment extends Fragment {
     private String reminderId;
     private boolean isEdit = false;
     private int orientation;
+    private boolean isTablet;
 
     public static EditReminderFragment newInstance() {
         return new EditReminderFragment();
@@ -52,6 +53,7 @@ public class EditReminderFragment extends Fragment {
         }
         setHasOptionsMenu(true);
         orientation = getResources().getConfiguration().orientation;
+        isTablet = getResources().getBoolean(R.bool.isTablet);
 
         fragmentManager = getActivity().getSupportFragmentManager();
 
@@ -110,18 +112,18 @@ public class EditReminderFragment extends Fragment {
                 return true;
             case R.id.edit_reminder_done:
                 mViewModel.saveReminder(isEdit);
-                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    fragmentManager.popBackStack();
-                } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                if (isTablet || orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     fragmentManager.beginTransaction().remove(this).commit();
+                } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    fragmentManager.popBackStack();
                 }
                 return true;
             case R.id.edit_reminder_delete:
                 mViewModel.deleteReminder();
-                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    fragmentManager.popBackStack();
-                } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                if (isTablet || orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     fragmentManager.beginTransaction().remove(this).commit();
+                } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    fragmentManager.popBackStack();
                 }
                 return true;
         }
@@ -129,7 +131,7 @@ public class EditReminderFragment extends Fragment {
     }
 
     public void setupToolbar(boolean showHome) {
-        showHome = ((orientation == Configuration.ORIENTATION_PORTRAIT) && showHome);
+        showHome = (!isTablet && orientation == Configuration.ORIENTATION_PORTRAIT && showHome);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(showHome);
     }
 

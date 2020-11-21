@@ -30,6 +30,7 @@ import butterknife.ButterKnife;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.databinding.DisplayNoteFragmentBinding;
 
+import static id.ac.ui.cs.mobileprogramming.irwanto.jotit.util.Constants.LEFT_CONTAINER_TAG;
 import static id.ac.ui.cs.mobileprogramming.irwanto.jotit.util.Constants.RIGHT_CONTAINER_TAG;
 
 public class DisplayNoteFragment extends Fragment {
@@ -39,6 +40,7 @@ public class DisplayNoteFragment extends Fragment {
     private FragmentManager fragmentManager;
     private String noteId;
     private int orientation;
+    private boolean isTablet;
 
     @BindView(R.id.display_note_image)
     ImageView imageView;
@@ -55,6 +57,7 @@ public class DisplayNoteFragment extends Fragment {
         fragmentManager = getActivity().getSupportFragmentManager();
 
         orientation = getResources().getConfiguration().orientation;
+        isTablet = getResources().getBoolean(R.bool.isTablet);
         setHasOptionsMenu(true);
 
         binding = DataBindingUtil.inflate(inflater, R.layout.display_note_fragment, container, false);
@@ -80,10 +83,10 @@ public class DisplayNoteFragment extends Fragment {
                 return true;
             case R.id.display_note_delete:
                 mViewModel.deleteNote();
-                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    fragmentManager.popBackStack();
-                } else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+                if (isTablet || orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     fragmentManager.beginTransaction().remove(this).commit();
+                } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    fragmentManager.popBackStack();
                 }
                 return true;
             case R.id.display_note_edit:
@@ -93,14 +96,14 @@ public class DisplayNoteFragment extends Fragment {
                 EditNotesFragment fragment = new EditNotesFragment();
                 fragment.setArguments(bundle);
 
-                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.activity_left_container, fragment)
-                            .addToBackStack(this.getClass().getName())
-                            .commit();
-                } else if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+                if (isTablet || orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     fragmentManager.beginTransaction()
                             .replace(R.id.activity_right_container, fragment, RIGHT_CONTAINER_TAG)
+                            .commit();
+                } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.activity_left_container, fragment, LEFT_CONTAINER_TAG)
+                            .addToBackStack(this.getClass().getName())
                             .commit();
                 }
                 return true;
@@ -131,7 +134,7 @@ public class DisplayNoteFragment extends Fragment {
     }
 
     public void setupToolbar(boolean showHome) {
-        showHome = ((orientation == Configuration.ORIENTATION_PORTRAIT) && showHome);
+        showHome = (!isTablet && orientation == Configuration.ORIENTATION_PORTRAIT && showHome);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(showHome);
     }
 
