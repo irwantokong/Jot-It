@@ -119,6 +119,7 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
 
         builder.setTitle(getString(R.string.remove_category) + " " + category.name + "?")
+                .setMessage(R.string.remove_category_message)
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

@@ -16,8 +16,12 @@
     <string name="ok">ok</string>
     <string name="add_category_hint">New category name</string>
     <string name="no_category">(no category)</string>
-    <string name="notification_channel_name">Notification channel</string>
-    <string name="notification_channel_id">notification_channel</string>
+    <string name="notification_channel_name" translatable="false">Notification channel</string>
+    <string name="notification_channel_id" translatable="false">notification_channel</string>
     <string name="description_hint">Description</string>
     <string name="title_hint">Title</string>
+    <string name="add_note">Add note</string>
+    <string name="add_reminder">Add reminder</string>
+    <string name="all_reminders">All reminders</string>
+    <string name="remove_category_message">All notes of this category will be kept with no category.</string>
 </resources>

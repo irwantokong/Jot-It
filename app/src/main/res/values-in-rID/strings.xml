@@ -17,4 +17,10 @@
     <string name="ok">ok</string>
     <string name="add_category_hint">Nama kategori baru</string>
     <string name="no_category">(tidak ada kategori)</string>
+    <string name="add_note">Tambahkan catatan</string>
+    <string name="add_reminder">Tambahkan pengingat</string>
+    <string name="description_hint">Deskripsi</string>
+    <string name="title_hint">Judul</string>
+    <string name="all_reminders" >Semua pengingat</string>
+    <string name="remove_category_message">Semua catatan kategori ini akan disimpan sebagai tanpa kategori.</string>
 </resources>

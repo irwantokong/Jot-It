@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -24,6 +25,7 @@ import static id.ac.ui.cs.mobileprogramming.irwanto.jotit.util.Constants.RIGHT_C
 public class MainActivity extends AppCompatActivity {
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
+    private int orientation;
 
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
@@ -35,10 +37,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        orientation = getResources().getConfiguration().orientation;
+
         if (savedInstanceState == null) {
             loadFragment(new NotesListFragment());
         } else {
-            loadFragment(fragmentManager.findFragmentByTag(LEFT_CONTAINER_TAG));
             if (fragmentManager.findFragmentByTag(RIGHT_CONTAINER_TAG) != null) {
                 Fragment f = fragmentManager.findFragmentByTag(RIGHT_CONTAINER_TAG);
                 fragmentManager.beginTransaction().remove(f).commit();
@@ -51,9 +54,12 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        if (fragmentManager.findFragmentByTag(RIGHT_CONTAINER_TAG) != null) {
-            Fragment f = fragmentManager.findFragmentByTag(RIGHT_CONTAINER_TAG);
-            fragmentManager.beginTransaction().remove(f).commit();
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (fragmentManager.findFragmentByTag(RIGHT_CONTAINER_TAG) != null) {
+                Fragment f = fragmentManager.findFragmentByTag(RIGHT_CONTAINER_TAG);
+                fragmentManager.beginTransaction().remove(f).commit();
+            }
         }
 
         Fragment fragment = null;

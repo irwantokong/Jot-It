@@ -36,7 +36,7 @@ public class NotesListAdapter extends ListAdapter<Note, NotesListAdapter.NoteVie
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
         Note current = getItem(position);
-        holder.bind(current.title);
+        holder.bind(current);
     }
 
     public static class NoteDiff extends DiffUtil.ItemCallback<Note> {
@@ -48,7 +48,8 @@ public class NotesListAdapter extends ListAdapter<Note, NotesListAdapter.NoteVie
 
         @Override
         public boolean areContentsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
-            return oldItem.title.equals(newItem.title);
+            return oldItem.title.equals(newItem.title) &&
+                    oldItem.title.equals(newItem.description);
         }
     }
 
@@ -56,14 +57,22 @@ public class NotesListAdapter extends ListAdapter<Note, NotesListAdapter.NoteVie
         @BindView(R.id.notes_item_title)
         TextView noteItemTitleView;
 
+        @BindView(R.id.notes_item_description)
+        TextView noteItemDescriptionView;
+
+        @BindView(R.id.notes_item_category)
+        TextView noteItemCategoryView;
+
         public NoteViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(String text) {
-            noteItemTitleView.setText(text);
+        public void bind(Note note) {
+            noteItemTitleView.setText(note.title);
+            noteItemDescriptionView.setText(note.description);
+            noteItemCategoryView.setText(note.category.name);
         }
 
         @Override
