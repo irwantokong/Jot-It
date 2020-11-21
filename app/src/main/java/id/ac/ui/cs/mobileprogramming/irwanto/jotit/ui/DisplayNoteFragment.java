@@ -85,9 +85,6 @@ public class DisplayNoteFragment extends Fragment {
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.remove(this);
                     fragmentTransaction.commit();
-
-                    NotesListFragment notesListFragment = (NotesListFragment) fragmentManager.findFragmentByTag("MainActivity");
-                    notesListFragment.updateView();
                 }
                 return true;
             case R.id.display_note_edit:
@@ -105,9 +102,6 @@ public class DisplayNoteFragment extends Fragment {
                     fragmentTransaction.replace(R.id.activity_right_container, fragment, "right_container");
                 }
                 fragmentTransaction.commit();
-
-                NotesListFragment notesListFragment = (NotesListFragment) fragmentManager.findFragmentByTag("MainActivity");
-                notesListFragment.updateView();
                 return true;
         }
         return false;

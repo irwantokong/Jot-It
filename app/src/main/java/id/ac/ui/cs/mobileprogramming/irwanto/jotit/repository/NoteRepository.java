@@ -22,41 +22,16 @@ public class NoteRepository {
         noteDAO = db.noteDAO();
     }
 
-    public List<Note> getAllNotes() {
-        Future<List<Note>> future = AppDatabase.databaseExecutor.submit(new Callable<List<Note>>() {
-            @Override
-            public List<Note> call() throws Exception {
-                return noteDAO.getAllNotes();
-            }
-        });
-
-        try {
-            return (List<Note>) future.get();
-        } catch (ExecutionException | InterruptedException e){
-            Log.e("NoteRepository", e.getMessage());
-        }
-
-        return null;
+    public LiveData<List<Note>> getAllNotes() {
+        return noteDAO.getAllNotes();
     }
 
     public LiveData<Note> getLiveDataNoteById(String noteId) {
         return noteDAO.getLivaDataNoteById(noteId);
     }
 
-    public List<Note> getNotesOfCategoryId(int categoryId) {
-        Future<List<Note>> future = AppDatabase.databaseExecutor.submit(new Callable<List<Note>>() {
-            @Override
-            public List<Note> call() throws Exception {
-                return noteDAO.getNotesOfCategory(categoryId);
-            }
-        });
-
-        try {
-            return future.get();
-        } catch (ExecutionException | InterruptedException e){
-            Log.e("NoteRepository", e.toString());
-        }
-        return null;
+    public LiveData<List<Note>> getNotesOfCategoryId(int categoryId) {
+        return noteDAO.getNotesOfCategory(categoryId);
     }
 
     public void insert(Note note) {

@@ -123,9 +123,6 @@ public class EditNotesFragment extends Fragment {
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.activity_right_container, fragment);
                     fragmentTransaction.commit();
-
-                    NotesListFragment notesListFragment = (NotesListFragment) fragmentManager.findFragmentByTag("MainActivity");
-                    notesListFragment.updateView();
                 }
                 return true;
             case R.id.edit_note_take_picture:

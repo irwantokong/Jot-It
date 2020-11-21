@@ -81,8 +81,9 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
         removeCategory.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
 
         category = (Category) parent.getItemAtPosition(position);
-        selectedPosition = position;
-        mViewModel.filterNotesByCategory(category, position == 0);
+        mViewModel.setCategory(category);
+//        selectedPosition = position;
+//        mViewModel.filterNotesByCategory(category, position == 0);
     }
 
     @OnClick(R.id.add_category)
@@ -177,7 +178,7 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getActivity().getApplication())).get(NotesListViewModel.class);
 
-        mViewModel.getAllNotes().observe(this, notes -> {
+        mViewModel.getAllNotesFilteredByCategory().observe(this, notes -> {
             adapter.submitList(notes);
         });
 
@@ -187,11 +188,8 @@ public class NotesListFragment extends Fragment implements NotesListAdapter.List
             Category allCategory = new Category();
             allCategory.name = getString(R.string.all_categories).toUpperCase();
             categoryAdapter.insert(allCategory, 0);
+            categorySpinner.setSelection(0);
         });
-    }
-
-    public void updateView() {
-        mViewModel.filterNotesByCategory(category, selectedPosition == 0);
     }
 
 }

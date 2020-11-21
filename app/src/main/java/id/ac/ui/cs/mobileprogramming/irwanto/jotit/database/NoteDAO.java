@@ -14,13 +14,13 @@ import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Note;
 @Dao
 public interface NoteDAO {
     @Query("SELECT * FROM notes_table ORDER BY _id DESC")
-    List<Note> getAllNotes();
+    LiveData<List<Note>> getAllNotes();
 
     @Query("SELECT * FROM notes_table WHERE note_id = :noteId")
     LiveData<Note> getLivaDataNoteById(String noteId);
 
     @Query("SELECT * FROM notes_table WHERE category_id = :categoryId")
-    List<Note> getNotesOfCategory(int categoryId);
+    LiveData<List<Note>> getNotesOfCategory(int categoryId);
 
     @Insert
     void insertNote(Note note);

@@ -5,9 +5,11 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
 import java.util.List;
 
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Category;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Note;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.repository.CategoryRepository;
@@ -17,18 +19,26 @@ public class NotesListViewModel extends AndroidViewModel {
     private final NoteRepository noteRepository;
     private final CategoryRepository categoryRepository;
 
-    private final MutableLiveData<List<Note>> allNotes = new MutableLiveData<>();
+    private final LiveData<List<Note>> allNotes;
+    private final LiveData<List<Note>> allNotesFilteredByCategory;
     private final LiveData<List<Category>> allCategories;
+    private final MutableLiveData<Category> category = new MutableLiveData<>();
 
     public NotesListViewModel(Application application) {
         super(application);
         noteRepository = new NoteRepository(application);
         categoryRepository = new CategoryRepository(application);
-        allNotes.setValue(noteRepository.getAllNotes());
+        allNotes = noteRepository.getAllNotes();
         allCategories = categoryRepository.getAllCategories();
+        allNotesFilteredByCategory = Transformations.switchMap(category, c -> {
+            if (c.name.equals(application.getString(R.string.all_categories).toUpperCase())) {
+                return noteRepository.getAllNotes();
+            }
+            return noteRepository.getNotesOfCategoryId(c.id);
+        });
     }
 
-    public MutableLiveData<List<Note>> getAllNotes() {
+    public LiveData<List<Note>> getAllNotes() {
         return allNotes;
     }
 
@@ -36,8 +46,16 @@ public class NotesListViewModel extends AndroidViewModel {
         return allCategories;
     }
 
-    public void filterNotesByCategory(Category category, boolean all) {
-        allNotes.setValue(all ? noteRepository.getAllNotes() : noteRepository.getNotesOfCategoryId(category.id));
+    public LiveData<List<Note>> getAllNotesFilteredByCategory() {
+        return allNotesFilteredByCategory;
+    }
+
+    //    public void filterNotesByCategory(Category category, boolean all) {
+//        allNotes.setValue(all ? noteRepository.getAllNotes() : noteRepository.getNotesOfCategoryId(category.id));
+//    }
+
+    public void setCategory(Category category) {
+        this.category.setValue(category);
     }
 
     public void addNewCategory(String categoryName) {
