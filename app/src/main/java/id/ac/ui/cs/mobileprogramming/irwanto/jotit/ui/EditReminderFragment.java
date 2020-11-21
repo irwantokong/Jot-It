@@ -111,7 +111,13 @@ public class EditReminderFragment extends Fragment {
                 return true;
             case R.id.edit_reminder_done:
                 mViewModel.saveReminder(isEdit);
-                fragmentManager.popBackStack();
+                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    fragmentManager.popBackStack();
+                } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.remove(this);
+                    fragmentTransaction.commit();
+                }
                 return true;
             case R.id.edit_reminder_delete:
                 mViewModel.deleteReminder();

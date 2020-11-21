@@ -19,7 +19,6 @@ public class NotesListViewModel extends AndroidViewModel {
     private final NoteRepository noteRepository;
     private final CategoryRepository categoryRepository;
 
-    private final LiveData<List<Note>> allNotes;
     private final LiveData<List<Note>> allNotesFilteredByCategory;
     private final LiveData<List<Category>> allCategories;
     private final MutableLiveData<Category> category = new MutableLiveData<>();
@@ -28,7 +27,6 @@ public class NotesListViewModel extends AndroidViewModel {
         super(application);
         noteRepository = new NoteRepository(application);
         categoryRepository = new CategoryRepository(application);
-        allNotes = noteRepository.getAllNotes();
         allCategories = categoryRepository.getAllCategories();
         allNotesFilteredByCategory = Transformations.switchMap(category, c -> {
             if (c.name.equals(application.getString(R.string.all_categories).toUpperCase())) {
@@ -38,10 +36,6 @@ public class NotesListViewModel extends AndroidViewModel {
         });
     }
 
-    public LiveData<List<Note>> getAllNotes() {
-        return allNotes;
-    }
-
     public LiveData<List<Category>> getAllCategories() {
         return allCategories;
     }
@@ -49,10 +43,6 @@ public class NotesListViewModel extends AndroidViewModel {
     public LiveData<List<Note>> getAllNotesFilteredByCategory() {
         return allNotesFilteredByCategory;
     }
-
-    //    public void filterNotesByCategory(Category category, boolean all) {
-//        allNotes.setValue(all ? noteRepository.getAllNotes() : noteRepository.getNotesOfCategoryId(category.id));
-//    }
 
     public void setCategory(Category category) {
         this.category.setValue(category);
