@@ -187,7 +187,8 @@ public class EditNotesFragment extends Fragment {
     }
 
     public void launchCamera() {
-        if (ContextCompat.checkSelfPermission(requireContext(), permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
+                ContextCompat.checkSelfPermission(requireContext(), permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             dispatchTakePictureIntent();
         } else {
             requestPermissions(new String[]{permission.CAMERA}, CAMERA_ACCESS);
