@@ -23,4 +23,6 @@
     <string name="title_hint">Judul</string>
     <string name="all_reminders" >Semua pengingat</string>
     <string name="remove_category_message">Semua catatan kategori ini akan disimpan sebagai tanpa kategori.</string>
+    <string name="not_connected_dialog_title">Tidak ada jaringan</string>
+    <string name="not_connected_dialog_message">Harap hubungkan ke jaringan internet sebelum mengakses tautan.</string>
 </resources>

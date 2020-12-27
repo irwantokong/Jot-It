@@ -24,4 +24,6 @@
     <string name="add_reminder">Add reminder</string>
     <string name="all_reminders">All reminders</string>
     <string name="remove_category_message">All notes of this category will be kept with no category.</string>
+    <string name="not_connected_dialog_message">Please connect to internet network first before accesing the link.</string>
+    <string name="not_connected_dialog_title">No network</string>
 </resources>

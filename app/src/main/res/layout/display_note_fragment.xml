@@ -7,6 +7,9 @@
         <variable
             name="viewModel"
             type="id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui.DisplayNoteViewModel" />
+        <variable
+            name="note"
+            type="id.ac.ui.cs.mobileprogramming.irwanto.jotit.model.Note"/>
     </data>
 
     <FrameLayout
@@ -40,7 +43,7 @@
                     android:id="@+id/display_note_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.viewedNote.title}"
+                    android:text="@{note.title}"
                     android:textSize="@dimen/text_size_normal"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +54,7 @@
                     android:id="@+id/display_note_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.viewedNote.description}"
+                    android:text="@{note.description}"
                     android:textSize="@dimen/text_size_normal"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
