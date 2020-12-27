@@ -26,4 +26,8 @@
     <string name="remove_category_message">All notes of this category will be kept with no category.</string>
     <string name="not_connected_dialog_message">Please connect to internet network first before accesing the link.</string>
     <string name="not_connected_dialog_title">No network</string>
+    <string name="camera_permission_never_ask_again_title">Go to settings!</string>
+    <string name="camera_permission_never_ask_again_message">You have denied permission to use camera and choose to never be asked again. Please go to Settings > Apps > Jot It > Permissions to grant permission to use camera if you need add picture to your note."</string>
+    <string name="camera_permission_denied_title">Permission denied!</string>
+    <string name="camera_permission_denied_message">You have denied permission to use camera. The permission is needed if you want to add picture to your note.</string>
 </resources>
