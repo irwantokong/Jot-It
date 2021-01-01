@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.res.Configuration;
+import android.opengl.GLES31;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,12 +25,21 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 import java.util.Calendar;
 
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.databinding.EditReminderFragmentBinding;
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui.components.EditReminderGLViewRenderer;
 
 public class EditReminderFragment extends Fragment {
 
@@ -39,6 +50,9 @@ public class EditReminderFragment extends Fragment {
     private boolean isEdit = false;
     private int orientation;
     private boolean isTablet;
+
+    @BindView(R.id.edit_reminder_glview)
+    GLSurfaceView glView;
 
     public static EditReminderFragment newInstance() {
         return new EditReminderFragment();
@@ -61,6 +75,12 @@ public class EditReminderFragment extends Fragment {
         binding.setLifecycleOwner(this);
         View view = binding.getRoot();
         ButterKnife.bind(this, view);
+
+        if (isEdit) {
+            glView.setVisibility(View.VISIBLE);
+            glView.setEGLContextClientVersion(2);
+            glView.setRenderer(new EditReminderGLViewRenderer(getContext()));
+        }
 
         return view;
     }
