@@ -25,6 +25,8 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import com.google.android.material.textview.MaterialTextView;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -51,8 +53,15 @@ public class EditReminderFragment extends Fragment {
     private int orientation;
     private boolean isTablet;
 
-    @BindView(R.id.edit_reminder_glview)
+    @BindView(R.id.edit_reminder_gl_view)
     GLSurfaceView glView;
+
+    @BindView(R.id.edit_reminder_notification_time)
+    MaterialTextView notificationTimeView;
+
+    static {
+        System.loadLibrary("helloWorld");
+    }
 
     public static EditReminderFragment newInstance() {
         return new EditReminderFragment();
@@ -80,6 +89,9 @@ public class EditReminderFragment extends Fragment {
             glView.setVisibility(View.VISIBLE);
             glView.setEGLContextClientVersion(2);
             glView.setRenderer(new EditReminderGLViewRenderer(getContext()));
+
+            notificationTimeView.setVisibility(View.VISIBLE);
+            notificationTimeView.setText(String.valueOf(hello()));
         }
 
         return view;
@@ -169,6 +181,8 @@ public class EditReminderFragment extends Fragment {
             });
         }
     }
+
+    public native String hello();
 
     @Override
     public void onDestroy() {
