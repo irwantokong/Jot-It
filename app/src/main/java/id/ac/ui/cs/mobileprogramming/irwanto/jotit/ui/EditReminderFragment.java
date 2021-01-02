@@ -199,8 +199,8 @@ public class EditReminderFragment extends Fragment {
                     e.printStackTrace();
                 }
             });
+            getActivity().registerReceiver(remainingTimeReceiver, new IntentFilter(RemainingTimeService.REMAINING_TIME_BR));
         }
-        getActivity().registerReceiver(remainingTimeReceiver, new IntentFilter(RemainingTimeService.REMAINING_TIME_BR));
     }
 
     private void updateRemainingTimeUI(Intent intent) {
@@ -209,7 +209,7 @@ public class EditReminderFragment extends Fragment {
             if (remainingTime >= 0) {
                 glView.setVisibility(View.VISIBLE);
                 remainingTimeView.setVisibility(View.VISIBLE);
-                String formattedTime = getFormattedRemainingTime(remainingTime, getString(R.string.hours), getString(R.string.minutes), getString(R.string.seconds));
+                String formattedTime = getFormattedRemainingTime(remainingTime, getContext().getString(R.string.hours), getContext().getString(R.string.minutes), getContext().getString(R.string.seconds));
                 remainingTimeView.setText(formattedTime);
                 notifyTimeMessageView.setText(R.string.reminder_remaining_time_message);
             } else {
