@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Jot It</string>
     <string name="bottom_nav_note_title">Catatan Saya</string>
     <string name="bottom_nav_reminder_title">Pengingat Saya</string>
     <string name="option_menu_save">Simpan</string>

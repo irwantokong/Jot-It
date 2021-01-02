@@ -1,7 +1,6 @@
 package id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui.components;
 
 import android.opengl.GLES20;
-import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -31,9 +30,7 @@ public class TextureHourglass {
                     "  gl_FragColor = vColor;" +
                     "}";
     private final int program;
-    private final int vertexCount = vertices.length / COORDS_PER_VERTEX;
     private final int vertexStride = COORDS_PER_VERTEX * 4;
-    private final int numFaces = 12;
 
     private FloatBuffer vertexBuffer;
     private ShortBuffer indexBuffer;

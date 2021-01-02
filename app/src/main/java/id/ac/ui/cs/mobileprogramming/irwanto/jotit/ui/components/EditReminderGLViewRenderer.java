@@ -5,7 +5,6 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
-import android.util.Log;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -16,8 +15,6 @@ public class EditReminderGLViewRenderer implements GLSurfaceView.Renderer {
     private final float[] vPMatrix = new float[16];
     private final float[] projectionMatrix = new float[16];
     private final float[] viewMatrix = new float[16];
-    private  float angleTriangle=0.5f;
-    private  float speedTriangle=0.05f;
     private float[] rotationMatrix = new float[16];
 
     public EditReminderGLViewRenderer(Context context) {
