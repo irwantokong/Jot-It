@@ -37,6 +37,8 @@
         <receiver android:name=".receiver.AlarmReceiver"
             android:enabled="true"
             android:exported="false"/>
+
+        <service android:name=".service.RemainingTimeService" />
     </application>
 
 </manifest>

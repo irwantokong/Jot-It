@@ -30,4 +30,9 @@
     <string name="camera_permission_never_ask_again_message">You have denied permission to use camera and choose to never be asked again. Please go to Settings > Apps > Jot It > Permissions to grant permission to use camera if you need add picture to your note."</string>
     <string name="camera_permission_denied_title">Permission denied!</string>
     <string name="camera_permission_denied_message">You have denied permission to use camera. The permission is needed if you want to add picture to your note.</string>
+    <string name="hours">hour(s)</string>
+    <string name="minutes">minute(s)</string>
+    <string name="seconds">second(s)</string>
+    <string name="reminder_remaining_time_message">Jot It will remind you in</string>
+    <string name="reminder_done_message">Reminder is not active</string>
 </resources>

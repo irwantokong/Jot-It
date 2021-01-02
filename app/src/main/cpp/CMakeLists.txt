@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.4.1)
 
 add_library(
-        helloWorld
+        formatter
         SHARED
-        helloWorld.cpp )
+        formatter.cpp)

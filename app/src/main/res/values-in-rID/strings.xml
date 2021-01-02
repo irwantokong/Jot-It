@@ -29,4 +29,9 @@
     <string name="camera_permission_never_ask_again_message">Anda menolak izin untuk menggunakan kamera dan memilih untuk tidak ditanyakan lagi. Mohon kunjungi Pengaturan > Aplikasi > Jot It > Izin untuk mengizinkan penggunaan kamera jika anda perlu menambahkan foto pada catatan anda.</string>
     <string name="camera_permission_denied_title">Izin tidak diberikan!</string>
     <string name="camera_permission_denied_message">Anda tidak mengizinkan penggunaan kamera. Izin ini dibutuhkan jika anda ingin menambahkan foto pada catatan anda.</string>
+    <string name="hours">jam</string>
+    <string name="minutes">menit</string>
+    <string name="seconds">detik</string>
+    <string name="reminder_remaining_time_message">Jot It akan mengingatkanmu dalam</string>
+    <string name="reminder_done_message">Pengingat tidak aktif</string>
 </resources>
