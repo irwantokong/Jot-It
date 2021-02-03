@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Jot It</string>
+    <string name="app_name" translatable="false">Jot It</string>
     <string name="bottom_nav_note_title">My Notes</string>
     <string name="bottom_nav_reminder_title">My Reminders</string>
     <string name="option_menu_save">Save</string>
@@ -16,7 +16,7 @@
     <string name="ok">ok</string>
     <string name="add_category_hint">New category name</string>
     <string name="no_category">(no category)</string>
-    <string name="notification_channel_name" translatable="false">Notification channel</string>
+    <string name="notification_channel_name" translatable="false">Reminder notification</string>
     <string name="notification_channel_id" translatable="false">notification_channel</string>
     <string name="description_hint">Description</string>
     <string name="title_hint">Title</string>
@@ -24,4 +24,15 @@
     <string name="add_reminder">Add reminder</string>
     <string name="all_reminders">All reminders</string>
     <string name="remove_category_message">All notes of this category will be kept with no category.</string>
+    <string name="not_connected_dialog_message">Please connect to internet network first before accesing the link.</string>
+    <string name="not_connected_dialog_title">No network</string>
+    <string name="camera_permission_never_ask_again_title">Go to settings!</string>
+    <string name="camera_permission_never_ask_again_message">You have denied permission to use camera and choose to never be asked again. Please go to Settings > Apps > Jot It > Permissions to grant permission to use camera if you need add picture to your note."</string>
+    <string name="camera_permission_denied_title">Permission denied!</string>
+    <string name="camera_permission_denied_message">You have denied permission to use camera. The permission is needed if you want to add picture to your note.</string>
+    <string name="hours">hour(s)</string>
+    <string name="minutes">minute(s)</string>
+    <string name="seconds">second(s)</string>
+    <string name="reminder_remaining_time_message">Jot It will remind you in</string>
+    <string name="reminder_done_message">Reminder is not active</string>
 </resources>

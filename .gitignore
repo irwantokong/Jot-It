@@ -190,6 +190,9 @@ $RECYCLE.BIN/
 ### AndroidStudio ###
 # Covers files to be ignored for android development using Android Studio.
 
+# App key
+app/key
+
 # Built application files
 app/release
 

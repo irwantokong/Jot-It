@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Jot It</string>
     <string name="bottom_nav_note_title">Catatan Saya</string>
     <string name="bottom_nav_reminder_title">Pengingat Saya</string>
     <string name="option_menu_save">Simpan</string>
@@ -23,4 +22,15 @@
     <string name="title_hint">Judul</string>
     <string name="all_reminders" >Semua pengingat</string>
     <string name="remove_category_message">Semua catatan kategori ini akan disimpan sebagai tanpa kategori.</string>
+    <string name="not_connected_dialog_title">Tidak ada jaringan</string>
+    <string name="not_connected_dialog_message">Harap hubungkan ke jaringan internet sebelum mengakses tautan.</string>
+    <string name="camera_permission_never_ask_again_title">Pergi ke pengaturan!</string>
+    <string name="camera_permission_never_ask_again_message">Anda menolak izin untuk menggunakan kamera dan memilih untuk tidak ditanyakan lagi. Mohon kunjungi Pengaturan > Aplikasi > Jot It > Izin untuk mengizinkan penggunaan kamera jika anda perlu menambahkan foto pada catatan anda.</string>
+    <string name="camera_permission_denied_title">Izin tidak diberikan!</string>
+    <string name="camera_permission_denied_message">Anda tidak mengizinkan penggunaan kamera. Izin ini dibutuhkan jika anda ingin menambahkan foto pada catatan anda.</string>
+    <string name="hours">jam</string>
+    <string name="minutes">menit</string>
+    <string name="seconds">detik</string>
+    <string name="reminder_remaining_time_message">Jot It akan mengingatkanmu dalam</string>
+    <string name="reminder_done_message">Pengingat tidak aktif</string>
 </resources>

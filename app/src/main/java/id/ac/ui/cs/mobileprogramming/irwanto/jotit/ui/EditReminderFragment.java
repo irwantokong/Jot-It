@@ -5,9 +5,15 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,12 +29,20 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
-import java.util.Calendar;
+import com.google.android.material.textview.MaterialTextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.databinding.EditReminderFragmentBinding;
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.service.RemainingTimeService;
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui.components.EditReminderGLViewRenderer;
 
 public class EditReminderFragment extends Fragment {
 
@@ -39,6 +53,29 @@ public class EditReminderFragment extends Fragment {
     private boolean isEdit = false;
     private int orientation;
     private boolean isTablet;
+    private Intent remainingTimeIntent;
+
+    @BindView(R.id.edit_reminder_gl_view)
+    GLSurfaceView glView;
+
+    @BindView(R.id.edit_reminder_remaining_time)
+    MaterialTextView remainingTimeView;
+
+    @BindView(R.id.edit_reminder_notify_time_message)
+    MaterialTextView notifyTimeMessageView;
+
+    static {
+        System.loadLibrary("formatter");
+    }
+
+    private BroadcastReceiver remainingTimeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                updateRemainingTimeUI(intent);
+            }
+        }
+    };
 
     public static EditReminderFragment newInstance() {
         return new EditReminderFragment();
@@ -61,6 +98,11 @@ public class EditReminderFragment extends Fragment {
         binding.setLifecycleOwner(this);
         View view = binding.getRoot();
         ButterKnife.bind(this, view);
+
+        if (isEdit) {
+            glView.setEGLContextClientVersion(2);
+            glView.setRenderer(new EditReminderGLViewRenderer(getContext()));
+        }
 
         return view;
     }
@@ -146,7 +188,45 @@ public class EditReminderFragment extends Fragment {
         if (isEdit) {
             mViewModel.getLoadedReminder().observe(this, reminder -> {
                 mViewModel.setEditableReminder(reminder);
+
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E, dd/MM/yyyy HH:mm");
+                try {
+                    Date datetime = simpleDateFormat.parse(reminder.date + " " + reminder.time);
+                    remainingTimeIntent = new Intent(getActivity(), RemainingTimeService.class);
+                    remainingTimeIntent.putExtra("target_time", datetime.getTime());
+                    getActivity().startService(remainingTimeIntent);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             });
+            getActivity().registerReceiver(remainingTimeReceiver, new IntentFilter(RemainingTimeService.REMAINING_TIME_BR));
+        }
+    }
+
+    private void updateRemainingTimeUI(Intent intent) {
+        if (intent.getExtras() != null) {
+            long remainingTime = intent.getLongExtra("remaining_time", System.currentTimeMillis());
+            if (remainingTime >= 0) {
+                glView.setVisibility(View.VISIBLE);
+                remainingTimeView.setVisibility(View.VISIBLE);
+                String formattedTime = getFormattedRemainingTime(remainingTime, getContext().getString(R.string.hours), getContext().getString(R.string.minutes), getContext().getString(R.string.seconds));
+                remainingTimeView.setText(formattedTime);
+                notifyTimeMessageView.setText(R.string.reminder_remaining_time_message);
+            } else {
+                glView.setVisibility(View.GONE);
+                remainingTimeView.setVisibility(View.GONE);
+                notifyTimeMessageView.setText(R.string.reminder_done_message);
+            }
+        }
+    }
+
+    public native String getFormattedRemainingTime(long remainingTime, String hours, String minutes, String seconds);
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (isEdit) {
+            getActivity().unregisterReceiver(remainingTimeReceiver);
         }
     }
 
@@ -155,5 +235,8 @@ public class EditReminderFragment extends Fragment {
         super.onDestroy();
         binding = null;
         setupToolbar(false);
+        if (isEdit && remainingTimeIntent != null) {
+            getActivity().stopService(remainingTimeIntent);
+        }
     }
 }

@@ -1,14 +1,20 @@
 package id.ac.ui.cs.mobileprogramming.irwanto.jotit.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
+import android.Manifest.permission;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +23,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +36,7 @@ import android.widget.Spinner;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.util.List;
@@ -46,6 +54,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class EditNotesFragment extends Fragment {
     private static final int REQUEST_IMAGE_CAPTURE = 21;
+    private static final int CAMERA_ACCESS = 211;
 
     private FragmentManager fragmentManager;
     private EditNotesViewModel mViewModel;
@@ -126,7 +135,7 @@ public class EditNotesFragment extends Fragment {
                 }
                 return true;
             case R.id.edit_note_take_picture:
-                dispatchTakePictureIntent();
+                launchCamera();
                 return true;
         }
         return false;
@@ -175,6 +184,52 @@ public class EditNotesFragment extends Fragment {
     public void setupToolbar(boolean showHome) {
         showHome = (!isTablet && orientation == Configuration.ORIENTATION_PORTRAIT && showHome);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(showHome);
+    }
+
+    public void launchCamera() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
+                ContextCompat.checkSelfPermission(requireContext(), permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            dispatchTakePictureIntent();
+        } else {
+            requestPermissions(new String[]{permission.CAMERA}, CAMERA_ACCESS);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case CAMERA_ACCESS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    dispatchTakePictureIntent();
+                    break;
+                } else if (!shouldShowRequestPermissionRationale(permissions[0])){
+                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
+                    builder.setTitle(R.string.camera_permission_never_ask_again_title)
+                            .setMessage(R.string.camera_permission_never_ask_again_message)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
+                            });
+                    builder.show();
+                    break;
+                } else {
+                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
+                    builder.setTitle(R.string.camera_permission_denied_title)
+                            .setMessage(R.string.camera_permission_denied_message)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
+                            });
+                    builder.show();
+                    break;
+                }
+        }
     }
 
     private void loadImage() {

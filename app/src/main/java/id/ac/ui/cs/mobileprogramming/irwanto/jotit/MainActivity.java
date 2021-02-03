@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
         orientation = getResources().getConfiguration().orientation;
         isTablet = getResources().getBoolean(R.bool.isTablet);
-        Log.d("isTablet", "" + isTablet);
 
         if (savedInstanceState == null) {
             loadFragment(new NotesListFragment());

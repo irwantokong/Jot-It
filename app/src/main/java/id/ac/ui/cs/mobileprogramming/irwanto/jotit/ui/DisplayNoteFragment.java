@@ -5,13 +5,21 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.SpannableString;
+import android.text.style.URLSpan;
+import android.text.util.Linkify;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,9 +27,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 
@@ -29,6 +41,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.R;
 import id.ac.ui.cs.mobileprogramming.irwanto.jotit.databinding.DisplayNoteFragmentBinding;
+import id.ac.ui.cs.mobileprogramming.irwanto.jotit.util.ConnectivityUtil;
+import me.saket.bettermovementmethod.BetterLinkMovementMethod;
 
 import static id.ac.ui.cs.mobileprogramming.irwanto.jotit.util.Constants.LEFT_CONTAINER_TAG;
 import static id.ac.ui.cs.mobileprogramming.irwanto.jotit.util.Constants.RIGHT_CONTAINER_TAG;
@@ -44,6 +58,9 @@ public class DisplayNoteFragment extends Fragment {
 
     @BindView(R.id.display_note_image)
     ImageView imageView;
+
+    @BindView(R.id.display_note_description)
+    TextView descriptionView;
 
     public static DisplayNoteFragment newInstance() {
         return new DisplayNoteFragment();
@@ -121,6 +138,30 @@ public class DisplayNoteFragment extends Fragment {
 
         mViewModel.viewedNote.observe(this, note -> {
             loadImage(note.imagePath);
+            binding.setNote(note);
+            binding.executePendingBindings();
+            setDescriptionViewLinkMovement();
+        });
+    }
+
+    public void setDescriptionViewLinkMovement() {
+        BetterLinkMovementMethod method = BetterLinkMovementMethod.linkify(Linkify.WEB_URLS, descriptionView);
+        method.setOnLinkClickListener((textView, url) -> {
+            ConnectivityUtil connectivityUtil = new ConnectivityUtil(getContext());
+
+            if (connectivityUtil.isNetworkConnected()) {
+                return false;
+            } else {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
+                builder.setTitle(R.string.not_connected_dialog_title)
+                        .setMessage(R.string.not_connected_dialog_message)
+                        .setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+                           dialogInterface.cancel();
+                        });
+                builder.show();
+            }
+
+            return true;
         });
     }
 
